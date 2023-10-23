@@ -1,0 +1,178 @@
+{
+  "project_info": {
+    "project_number": "485649260159",
+    "project_id": "coucouexpress-502d4",
+    "storage_bucket": "coucouexpress-502d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485649260159:android:a084ad1b5d746994dde94a",
+        "android_client_info": {
+          "package_name": "com.CoucouExpress.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485649260159-0qosk6qn94gr883erjb239v80l3seide.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.CoucouExpress.customer",
+            "certificate_hash": "b86b1f84db81748b49e18210db95230748c06b65"
+          }
+        },
+        {
+          "client_id": "485649260159-v35tphao1fqnbai7orv74g72om3ukbrl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.CoucouExpress.customer",
+            "certificate_hash": "27f6d2dec391d497d80a041e902ce7a29ffb625e"
+          }
+        },
+        {
+          "client_id": "485649260159-mbn5cqrlrepjbkalh37nvjhik8m6rvhm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIcCd-I5JKJi84dUGWYVRAB5NVpTj0I6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485649260159-6ud1fvproaa3ff0bkkc14us5c09p4nmp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485649260159-60fe063e3fbe1puqe15j9oudk7vibiho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodDelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485649260159:android:d96c9c56b0a62d41dde94a",
+        "android_client_info": {
+          "package_name": "com.coucouexpress"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485649260159-mbn5cqrlrepjbkalh37nvjhik8m6rvhm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIcCd-I5JKJi84dUGWYVRAB5NVpTj0I6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485649260159-6ud1fvproaa3ff0bkkc14us5c09p4nmp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485649260159-60fe063e3fbe1puqe15j9oudk7vibiho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodDelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485649260159:android:2eae834c3037febbdde94a",
+        "android_client_info": {
+          "package_name": "com.coucouexpress.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485649260159-mbn5cqrlrepjbkalh37nvjhik8m6rvhm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIcCd-I5JKJi84dUGWYVRAB5NVpTj0I6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485649260159-6ud1fvproaa3ff0bkkc14us5c09p4nmp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485649260159-60fe063e3fbe1puqe15j9oudk7vibiho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodDelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485649260159:android:b9b61c7b3c74819cdde94a",
+        "android_client_info": {
+          "package_name": "com.mighty.deliveryboy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485649260159-q5sqie4s8hiv5sokr93jgkoija2edvvr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mighty.deliveryboy",
+            "certificate_hash": "b86b1f84db81748b49e18210db95230748c06b65"
+          }
+        },
+        {
+          "client_id": "485649260159-mbn5cqrlrepjbkalh37nvjhik8m6rvhm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIcCd-I5JKJi84dUGWYVRAB5NVpTj0I6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485649260159-6ud1fvproaa3ff0bkkc14us5c09p4nmp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485649260159-60fe063e3fbe1puqe15j9oudk7vibiho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodDelivery"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

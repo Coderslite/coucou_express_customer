@@ -1,0 +1,5 @@
+<resources>
+    <string name="default_notification_channel_id">com.coucouexpress</string>
+    <string name="default_notification_channel_name">Coucou Express</string>
+    <string name="default_notification_channel_description">Coucou Express Food Delivery Service</string>
+</resources>

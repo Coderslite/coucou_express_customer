@@ -1,0 +1,105 @@
+name: fooddelivery
+description: A new Flutter application.
+
+# publish_to: 'none' 
+
+version: 2.0.0+12
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Base
+  cupertino_icons: ^1.0.5
+  nb_utils: ^5.0.8
+  intl: ^0.17.0
+  google_fonts: ^4.0.4
+
+  # FIREBASE PACKAGES
+  firebase_core: ^1.10.6
+  firebase_auth: ^3.3.4
+  cloud_firestore: ^3.1.5
+  firebase_analytics: ^9.1.10
+  firebase_remote_config: ^2.0.9
+  firebase_storage: ^10.2.18
+
+  # CONNECTIVITY
+  share: ^2.0.4
+  url_launcher: ^6.1.4
+  package_info_plus: ^4.0.2
+
+  # STATE MANAGEMENT
+  mobx: ^2.0.7+3
+  flutter_mobx: ^2.0.6+1
+
+  # MAP
+  google_maps_flutter: ^2.1.8
+  geolocator: ^9.0.2
+  geocoding: ^2.0.4
+
+  # UI
+  flutter_rating_bar: ^4.0.1
+  flutter_staggered_grid_view: ^0.6.1
+  flutter_vector_icons: ^2.0.0
+  country_code_picker: ^3.0.0
+  sliding_up_panel: 2.0.0+1
+  modal_bottom_sheet: ^2.0.1
+
+  # WEB TOOLS
+  html: ^0.15.0
+
+  # AUTHENTICATION
+  google_sign_in: ^6.1.3
+
+  # PUSH NOTIFICATION
+  onesignal_flutter: ^3.3.2
+
+  # IMAGES
+  image_picker: ^0.8.6
+  cached_network_image: ^3.2.3
+
+  #PAGINATON
+  paginate_firestore: ^1.0.3+1
+
+  # APP LOCATION
+  flutter_localizations:
+    sdk: flutter
+  custom_floating_action_button: ^0.0.3
+  social_media_recorder: ^0.2.0
+  flutter_typeahead: ^4.6.1
+  http: ^0.13.6
+  flutter_google_places: ^0.3.0
+  firebase_messaging: ^13.1.0
+  flutter_local_notifications: ^14.1.1
+  flutter_sound: ^9.0.6
+  audio_video_progress_bar: ^1.0.1
+  audio_session: ^0.1.16
+  avatar_glow: ^2.0.2
+  audioplayers: ^4.1.0
+  upgrader:
+  infinite_scroll_pagination: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.1.11
+  mobx_codegen: ^2.0.7
+  change_app_package_name: ^1.1.0
+
+dependency_overrides:
+    firebase_core_platform_interface: 4.5.1
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/placeholder.jpg
+    - assets/food/
+    - assets/
+    - assets/flag/
+    - lang/
+
