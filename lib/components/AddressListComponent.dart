@@ -10,13 +10,12 @@ import '../services/CalculateDistance.dart';
 import '../services/GetLocationLatLng.dart';
 import '../utils/Constants.dart';
 
-// ignore: must_be_immutable
 class AddressListComponent extends StatefulWidget {
   static String tag = '/AddressListComponent';
-  UserModel? userData;
-  bool? isOrder;
+  final UserModel userData;
+  final bool isOrder;
 
-  AddressListComponent({this.userData, this.isOrder});
+  AddressListComponent({required this.userData, required this.isOrder});
 
   @override
   AddressListComponentState createState() => AddressListComponentState();
@@ -34,44 +33,45 @@ class AddressListComponentState extends State<AddressListComponent> {
   }
 
   Future<void> init() async {
-    //
+    // Initialize any required data
   }
 
-  Future removeAddress(int index) async {
+  Future<void> removeAddress(int index) async {
     appStore.setLoading(true);
 
-    widget.userData!.listOfAddress!.removeAt(index);
-    widget.userData!.updatedAt = DateTime.now();
+    widget.userData.listOfAddress!.removeAt(index);
+    widget.userData.updatedAt = DateTime.now();
 
-    await userDBService
-        .updateDocument(widget.userData!.toJson(), appStore.userId)
-        .then((value) {
+    try {
+      await userDBService.updateDocument(
+          widget.userData.toJson(), appStore.userId);
       toast(appStore.translate('removed'));
-
-      appStore.setLoading(false);
-    }).catchError((e) {
-      appStore.setLoading(false);
+    } catch (e) {
       toast(e.toString());
-    });
-    setState(() {});
+    } finally {
+      appStore.setLoading(false);
+      setState(() {});
+    }
   }
 
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
+  // Create a set to keep track of clicked items
+  final Set<int> clickedItems = Set<int>();
 
   @override
   Widget build(BuildContext context) {
-    if (widget.userData!.listOfAddress.validate().isEmpty)
+    if (widget.userData.listOfAddress.validate().isEmpty) {
       return Text(appStore.translate('no_address_found'),
               style: secondaryTextStyle())
           .center();
+    }
 
     return ListView.builder(
       padding: EdgeInsets.all(8),
       itemBuilder: (_, index) {
-        AddressModel addressModel = widget.userData!.listOfAddress![index];
+        AddressModel addressModel = widget.userData.listOfAddress![index];
+
+        // Determine if the item has been clicked
+        final bool isClicked = clickedItems.contains(index);
 
         return Container(
           margin: EdgeInsets.all(8),
@@ -85,18 +85,21 @@ class AddressListComponentState extends State<AddressListComponent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(addressModel.addressLocation.validate(),
-                  style: boldTextStyle(size: 14),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis),
+              Text(
+                addressModel.addressLocation.validate(),
+                style: boldTextStyle(size: 14),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
               4.height,
               Text(
-                  addressModel.addressLocation == 'Inside UCAD'
-                      ? addressModel.pavilionNo.validate()
-                      : addressModel.address.validate(),
-                  style: boldTextStyle(size: 14),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis),
+                addressModel.addressLocation == 'Inside UCAD'
+                    ? addressModel.pavilionNo.validate()
+                    : addressModel.address.validate(),
+                style: boldTextStyle(size: 14),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
               4.height,
               Text(addressModel.otherDetails.validate(),
                   style: secondaryTextStyle()),
@@ -118,55 +121,76 @@ class AddressListComponentState extends State<AddressListComponent> {
               )
             ],
           ),
-        ).onTap(() {
-          if (widget.isOrder.validate()) {
-            appStore.setAddressModel(addressModel);
-            appStore.setIsCalculating(true);
-            deliveryFee = 0;
-            appStore.setDeliveryCharge(deliveryFee);
-            appStore.mCartList.forEach((element) async {
-              if (addressModel.addressLocation == "Inside UCAD") {
-                totalQty += element!.qty!;
-                print("within UCAD");
-              } else {
-                if (addressModel.address!.isNotEmpty) {
-                  LatLng userLocation =
-                      await getLatLngFromLocationName(addressModel.address!);
-                  double roundedValue = double.parse(
-                      calculateDistance(UCAD_LOCATION, userLocation)
-                          .toStringAsFixed(2));
-                  var charge = roundedValue * AROUND_UCAD_CHARGES;
-                  deliveryFee = deliveryFee + charge;
-                  appStore.setDeliveryCharge(deliveryFee);
-                  print("distance is $roundedValue");
-                } else {
-                  print("restaurant name is empty");
-                }
+        ).onTap(() async {
+          if (widget.isOrder && !isClicked) {
+            // Mark the item as clicked
+            appStore.setContainNoPrice(false);
+
+            clickedItems.add(index);
+            appStore.mCartList.forEach((element) {
+              if (element?.isSuggestedPrice == true ||
+                  element?.itemPrice == null) {
+                print("Price is not available");
+                print(element?.itemPrice);
+                appStore.setContainNoPrice(true);
               }
             });
+            setState(() {});
 
-            if (totalQty <= 4 && totalQty > 0) {
-              deliveryFee += 100;
-            } else if (totalQty > 4 && totalQty < 25) {
-              deliveryFee += totalQty * 25;
-            } else if (totalQty > 25) {
-              deliveryFee += 500;
-            }
+            // Calculate delivery fee and wait for it to finish
+            await calculateDeliveryFee(addressModel);
 
-            setState(() {
-              appStore.setIsCalculating(false);
-              appStore.setDeliveryCharge(deliveryFee);
-            });
-            finish(
-              context,
-              addressModel,
-            );
+            // Finish after everything is done
+            await Future.delayed(Duration(seconds: 1));
+
+            finish(context, addressModel);
           }
         });
       },
-      itemCount: widget.userData!.listOfAddress.validate().length,
+      itemCount: widget.userData.listOfAddress.validate().length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
     );
+  }
+
+  Future<void> calculateDeliveryFee(AddressModel addressModel) async {
+    appStore.setAddressModel(addressModel);
+    appStore.setIsCalculating(true);
+    deliveryFee = 0;
+    appStore.setDeliveryCharge(deliveryFee);
+
+    for (var element in appStore.mCartList) {
+      if (element!.ownedByUs == true &&
+          addressModel.addressLocation == 'Inside UCAD') {
+        totalQty += 0;
+      } else {
+        if (addressModel.addressLocation == "Inside UCAD") {
+          totalQty += element.qty!;
+        } else {
+          if (addressModel.address!.isNotEmpty) {
+            LatLng userLocation =
+                await getLatLngFromLocationName(addressModel.address!);
+            double distance = calculateDistance(UCAD_LOCATION, userLocation);
+            double charge = distance * AROUND_UCAD_CHARGES;
+            deliveryFee += charge;
+            print("Distance is $distance");
+          } else {
+            print("Restaurant name is empty");
+          }
+        }
+      }
+    }
+
+    if (totalQty <= 4 && totalQty > 0) {
+      deliveryFee += 100;
+    } else if (totalQty > 4 && totalQty < 25) {
+      deliveryFee += totalQty * 25;
+    } else if (totalQty > 25) {
+      deliveryFee += 500;
+    }
+
+    appStore.setDeliveryCharge(deliveryFee);
+    appStore.setIsCalculating(false);
+    setState(() {});
   }
 }

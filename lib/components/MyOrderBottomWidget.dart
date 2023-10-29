@@ -1,8 +1,6 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:fooddelivery/components/pament_method.dart';
 import 'package:fooddelivery/models/AddressModel.dart';
 import 'package:fooddelivery/models/OrderItemData.dart';
 import 'package:fooddelivery/models/OrderModel.dart';
@@ -10,14 +8,12 @@ import 'package:fooddelivery/screens/MyAddressScreen.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../function/available_drivers.dart';
 import '../function/send_notification.dart';
 import '../main.dart';
-import '../services/GetLocationLatLng.dart';
 import 'OrderSuccessFullyDialog.dart';
-import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class MyOrderBottomWidget extends StatefulWidget {
@@ -29,7 +25,7 @@ class MyOrderBottomWidget extends StatefulWidget {
   String? orderAddress;
   Function? onPlaceOrder;
   double deliveryFee;
-  bool containNotOnGoogle;
+  bool containIsSuggestedPrice;
 
   MyOrderBottomWidget({
     this.totalAmount,
@@ -39,7 +35,7 @@ class MyOrderBottomWidget extends StatefulWidget {
     this.isOrder,
     this.onPlaceOrder,
     required this.deliveryFee,
-    required this.containNotOnGoogle,
+    required this.containIsSuggestedPrice,
   });
 
   @override
@@ -58,6 +54,12 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
   void initState() {
     super.initState();
     init();
+  }
+
+  @override
+  void dispose() {
+    appStore.setPaymentMethod("");
+    super.dispose();
   }
 
   Future<void> init() async {
@@ -99,6 +101,7 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
             categoryId: element.categoryId,
             categoryName: element.categoryName,
             itemPrice: element.itemPrice,
+            isSuggestedPrice: element.isSuggestedPrice,
             // restaurantId: element.restaurantId,
             // restaurantName: element.restaurantName,
           ),
@@ -110,8 +113,7 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       OrderModel orderModel = OrderModel();
 
       orderModel.userId = appStore.userId;
-      orderModel.orderStatus =
-          widget.containNotOnGoogle ? ORDER_PENDING : ORDER_RECEIVED;
+      orderModel.orderStatus = ORDER_RECEIVED;
       orderModel.createdAt = DateTime.now();
       orderModel.updatedAt = DateTime.now();
       orderModel.totalAmount = widget.totalAmount;
@@ -124,7 +126,7 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       orderModel.deliveryAddress = deliveryAddress;
       orderModel.pavilionNo = pavilionNo;
       orderModel.userAddress = appStore.addressModel!.address;
-      orderModel.paymentMethod = CASH_ON_DELIVERY;
+      orderModel.paymentMethod = appStore.paymentMethod;
       orderModel.deliveryCharge = appStore.deliveryCharge.toInt();
       orderModel.restaurantCity = getStringAsync(USER_CITY_NAME);
       orderModel.paymentStatus = PAYMENT_STATUS_PENDING;
@@ -136,17 +138,19 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       orderModel.deliveryAddressDescription = addressDes;
       myOrderDBService.addDocument(orderModel.toJson()).then((value) async {
         await Future.forEach(appStore.mCartList, (dynamic element) async {
-          SendNotification.handleSentToAgent(value.id);
+          // SendNotification.handleSentToAgent(value.id);
           await myCartDBService.removeDocument(element.id);
         });
         appStore.clearCart();
         widget.totalAmount = 0;
-
+        availableDrivers(value.id);
         widget.onPlaceOrder?.call();
 
         showInDialog(
           context,
-          child: OrderSuccessFullyDialog(),
+          child: OrderSuccessFullyDialog(
+            orderId: value.id,
+          ),
           contentPadding: EdgeInsets.all(0),
           shape: RoundedRectangleBorder(borderRadius: radius(12)),
         );
@@ -182,118 +186,129 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       ),
       padding: EdgeInsets.all(16),
       child: Observer(builder: (context) {
-        return appStore.addressModel!.addressLocation == null
+        return appStore.addressModel == null
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("Please select address"),
                 ],
               )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  widget.containNotOnGoogle
-                      ? Observer(
-                          builder: (_) => appStore.isCalculating == true
-                              ? Text("")
+            : appStore.addressModel!.addressLocation == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Please select address"),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      widget.containIsSuggestedPrice
+                          ? appStore.isCalculating
+                              ? Text("Loading")
                               : Column(
                                   children: [
                                     Text(
-                                      "There is an order with no definite location on google, the driver will review and resend you a respond on the charge later",
-                                      style:
-                                          boldTextStyle(size: 15, color: black),
+                                      "please note that price may vary",
+                                      style: boldTextStyle(
+                                        size: 15,
+                                      ),
                                     ),
-                                    Divider(),
+                                    Divider(
+                                      height: 2,
+                                    ),
                                     10.height,
                                   ],
-                                ),
-                        )
-                      : Container(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(appStore.translate('total_item'),
-                          style: secondaryTextStyle(
-                              color: Colors.white, size: 14)),
-                      Observer(
-                          builder: (_) => Text(
-                              appStore.mCartList.length.toString(),
-                              style: boldTextStyle(color: Colors.white))),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(appStore.translate('delivery_charges'),
-                          style: secondaryTextStyle(color: Colors.white)),
-                      Observer(
-                        builder: (_) => appStore.isCalculating == true
-                            ? Text("Loading")
-                            : Text(getAmount(appStore.deliveryCharge.toInt()),
-                                style: boldTextStyle(color: Colors.white)),
+                                )
+                          : Container(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(appStore.translate('total_item'),
+                              style: secondaryTextStyle(
+                                  color: Colors.white, size: 14)),
+                          Observer(
+                              builder: (_) => Text(
+                                  appStore.mCartList.length.toString(),
+                                  style: boldTextStyle(color: Colors.white))),
+                        ],
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        appStore.translate('total').toUpperCase(),
-                        style: primaryTextStyle(color: Colors.white),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(appStore.translate('delivery_charges'),
+                              style: secondaryTextStyle(color: Colors.white)),
+                          Observer(
+                            builder: (_) => appStore.isCalculating == true
+                                ? Text("Loading")
+                                : Text(
+                                    getAmount(appStore.deliveryCharge.toInt()),
+                                    style: boldTextStyle(color: Colors.white)),
+                          ),
+                        ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            appStore.translate('total').toUpperCase(),
+                            style: primaryTextStyle(color: Colors.white),
+                          ),
+                          Observer(
+                              builder: (_) => appStore.isCalculating == true
+                                  ? Text("Loading")
+                                  : Text(
+                                      widget.totalAmount != null &&
+                                              widget.totalAmount != 0
+                                          ? getAmount(
+                                              widget.totalAmount!.toInt() +
+                                                  appStore.deliveryCharge
+                                                      .toInt()
+                                                      .validate())
+                                          : 'Not Available',
+                                      style: boldTextStyle(
+                                          color: widget.totalAmount != null &&
+                                                  widget.totalAmount != 0
+                                              ? context.iconColor
+                                              : orangeRed,
+                                          size: 20))),
+                        ],
+                      ),
+                      30.height,
                       Observer(
-                          builder: (_) => appStore.isCalculating == true
-                              ? Text("Loading")
-                              : Text(
-                                  getAmount(widget.totalAmount!.toInt() +
-                                      appStore.deliveryCharge
-                                          .toInt()
-                                          .validate()),
+                        builder: (_) => AppButton(
+                          width: context.width(),
+                          shapeBorder: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
+                          child: appStore.isCalculating
+                              ? CircularProgressIndicator(
+                                  backgroundColor: colorPrimary,
+                                )
+                              : Text(appStore.translate('place_order'),
                                   style: boldTextStyle(
-                                      color: Colors.white, size: 20))),
+                                      color: appStore.isDarkMode
+                                          ? white
+                                          : colorPrimary)),
+                          color:
+                              appStore.isDarkMode ? colorPrimary : Colors.white,
+                          onTap: () async {
+                            if (appStore.addressModel == null) {
+                              address();
+                            } else {
+                              appStore.isCalculating
+                                  ? null
+                                  : showInDialog(context,
+                                      child: PaymentMethod(
+                                        amount: widget.totalAmount!,
+                                        order: order,
+                                      ));
+                            }
+                          },
+                        ),
+                      )
                     ],
-                  ),
-                  30.height,
-                  Observer(
-                    builder: (_) => AppButton(
-                      width: context.width(),
-                      shapeBorder: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30))),
-                      child: appStore.isCalculating
-                          ? CircularProgressIndicator(
-                              backgroundColor: colorPrimary,
-                            )
-                          : Text(appStore.translate('place_order'),
-                              style: boldTextStyle(
-                                  color: appStore.isDarkMode
-                                      ? white
-                                      : colorPrimary)),
-                      color: appStore.isDarkMode ? colorPrimary : Colors.white,
-                      onTap: () async {
-                        if (appStore.addressModel == null) {
-                          address();
-                        } else {
-                          appStore.isCalculating
-                              ? null
-                              : showConfirmDialog(
-                                  context,
-                                  appStore
-                                      .translate('place_order_confirmation'),
-                                  negativeText: appStore.translate('no'),
-                                  positiveText: appStore.translate('yes'),
-                                ).then((value) {
-                                  if (value ?? false) {
-                                    order();
-                                  }
-                                }).catchError((e) {
-                                  toast(e.toString());
-                                });
-                        }
-                      },
-                    ),
-                  )
-                ],
-              );
+                  );
       }),
     );
   }

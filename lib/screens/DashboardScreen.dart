@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
 import 'package:fooddelivery/utils/Colors.dart';
@@ -23,13 +22,6 @@ class DashboardScreen extends StatefulWidget {
 
 class DashboardScreenState extends State<DashboardScreen> {
   int selectedIndex = 0;
-
-  List<Widget> screens = [
-    HomeFragment(),
-    OrderFragment(),
-    CartFragment(),
-    ProfileFragment(),
-  ];
 
   @override
   void initState() {
@@ -91,45 +83,61 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("reloaded");
     appStore.setAppLocalization(context);
 
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: colorPrimary,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: appStore.isDarkMode ? scaffoldSecondaryDark : white,
-        onTap: (index) {
-          if (index == 1 || index == 3 || index == 2) {
-            if (!appStore.isLoggedIn) {
-              LoginScreen().launch(context);
-              return;
-            }
-          }
-          selectedIndex = index;
-          setState(() {});
-        },
-        type: BottomNavigationBarType.fixed,
-        currentIndex: selectedIndex,
-        selectedLabelStyle: TextStyle(fontSize: 16),
-        unselectedLabelStyle: TextStyle(fontSize: 16),
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant_menu_outlined),
-              label: appStore.translate('home')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_basket_outlined),
-              label: appStore.translate('order')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart_outlined),
-              label: appStore.translate('cart')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: appStore.translate('profile')),
-        ],
-      ),
+      bottomNavigationBar: getFooter(),
       body: SafeArea(
-        child: screens[selectedIndex],
+        child: IndexedStack(
+          index: selectedIndex,
+          children: [
+            HomeFragment(),
+            OrderFragment(),
+            CartFragment(),
+            ProfileFragment(),
+          ],
+        ),
       ),
     );
+  }
+
+  getFooter() {
+    return BottomNavigationBar(
+      selectedItemColor: colorPrimary,
+      unselectedItemColor: Colors.grey,
+      backgroundColor: appStore.isDarkMode ? scaffoldSecondaryDark : white,
+      onTap: (index) {
+        selectedTab(index);
+      },
+      type: BottomNavigationBarType.fixed,
+      currentIndex: selectedIndex,
+      selectedLabelStyle: TextStyle(fontSize: 16),
+      unselectedLabelStyle: TextStyle(fontSize: 16),
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'Orders',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.receipt),
+          label: 'Cart',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+    );
+  }
+
+  selectedTab(index) {
+    setState(() {
+      selectedIndex = index;
+    });
   }
 }

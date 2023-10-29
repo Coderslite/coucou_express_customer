@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fooddelivery/components/MyOrderBottomWidget.dart';
 import 'package:fooddelivery/components/MyOrderListItemComponent.dart';
@@ -38,8 +37,6 @@ class MyOrderScreenState extends State<MyOrderScreen> {
   bool? isOrder;
   String address = "";
   double deliveryFee = 0.0;
-  bool isCalculating = true;
-  bool containNotOnGoogle = false;
   int totalQty = 0;
   int totalAroundOrder = 0;
 
@@ -77,39 +74,51 @@ class MyOrderScreenState extends State<MyOrderScreen> {
     setState(() {});
   }
 
-  void calculateDeliveryCharges() {
+  void calculateDeliveryCharges() async {
     appStore.setIsCalculating(true);
     deliveryFee = 0;
     appStore.setDeliveryCharge(deliveryFee);
-    if (appStore.addressModel == null) {
-      print("address is null");
-      appStore.setIsCalculating(false);
-      isCalculating = false;
+
+    if (appStore.addressModel?.addressLocation == null) {
+      print("Address is null");
     } else {
       print(appStore.addressModel!.address);
 
-      setState(() {});
-
-      appStore.mCartList.forEach((element) async {
-        if (appStore.addressModel!.addressLocation == "Inside UCAD") {
-          totalQty += element!.qty!;
-          print("within UCAD");
-        } else {
-          if (appStore.addressModel!.address!.isNotEmpty) {
+      if (appStore.addressModel!.addressLocation == "Inside UCAD") {
+        totalQty = appStore.mCartList.fold<int>(0, (total, element) {
+          if (element!.ownedByUs == true &&
+              appStore.addressModel!.addressLocation == 'Inside UCAD') {
+            return 0;
+          }
+          return total + (element.qty ?? 0);
+        });
+        print("Within UCAD");
+      } else {
+        if (appStore.addressModel!.address?.isNotEmpty == true) {
+          try {
             LatLng userLocation = await getLatLngFromLocationName(
                 appStore.addressModel!.address!);
-            double roundedValue = double.parse(calculateDistance(UCAD_LOCATION,
-                   userLocation)
-                .toStringAsFixed(2));
-            var charge = roundedValue * AROUND_UCAD_CHARGES;
-            deliveryFee = deliveryFee + charge;
-            appStore.setDeliveryCharge(deliveryFee);
-            appStore.setIsCalculating(false);
-          } else {
-            print("restaurant name is empty");
+            print("User location: $userLocation");
+            double distance = calculateDistance(UCAD_LOCATION, userLocation);
+            double charge = distance * AROUND_UCAD_CHARGES;
+            deliveryFee += charge;
+            print(deliveryFee);
+          } catch (e) {
+            print("Error getting user location: $e");
           }
+        } else {
+          print("Restaurant name is empty");
         }
-        setState(() {});
+      }
+
+      appStore.mCartList.forEach((element) {
+        if (element?.isSuggestedPrice == true || element?.itemPrice == null) {
+          print("Price is not available");
+          print(element?.itemPrice);
+          appStore.setContainNoPrice(true);
+        } else {
+          appStore.setContainNoPrice(false);
+        }
       });
 
       if (totalQty <= 4 && totalQty > 0) {
@@ -119,14 +128,15 @@ class MyOrderScreenState extends State<MyOrderScreen> {
       } else if (totalQty > 25) {
         deliveryFee += 500;
       }
+
       if (totalAroundOrder > 0) {
         deliveryFee += AROUND_UCAD_CHARGES;
       }
-
-      appStore.setIsCalculating(false);
-
-      appStore.setDeliveryCharge(deliveryFee);
     }
+
+    appStore.setIsCalculating(false);
+    appStore.setDeliveryCharge(deliveryFee);
+    setState(() {});
   }
 
   @override
@@ -136,6 +146,7 @@ class MyOrderScreenState extends State<MyOrderScreen> {
       statusBarIconBrightness:
           appStore.isDarkMode ? Brightness.light : Brightness.dark,
     );
+    appStore.setContainNoPrice(false);
     super.dispose();
   }
 
@@ -168,18 +179,20 @@ class MyOrderScreenState extends State<MyOrderScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: MyOrderBottomWidget(
-          totalAmount: totalAmount,
-          userLatitude: userLatitude,
-          userLongitude: userLongitude,
-          orderAddress: address,
-          isOrder: true,
-          deliveryFee: appStore.deliveryCharge,
-          containNotOnGoogle: containNotOnGoogle,
-          onPlaceOrder: () {
-            setState(() {});
-          },
-        ),
+        bottomNavigationBar: Observer(builder: (context) {
+          return MyOrderBottomWidget(
+            containIsSuggestedPrice: appStore.containNoPrice,
+            totalAmount: totalAmount,
+            userLatitude: userLatitude,
+            userLongitude: userLongitude,
+            orderAddress: address,
+            isOrder: true,
+            deliveryFee: appStore.deliveryCharge,
+            onPlaceOrder: () {
+              setState(() {});
+            },
+          );
+        }),
       ),
     );
   }

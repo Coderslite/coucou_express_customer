@@ -104,6 +104,7 @@ class HomeFragmentState extends State<HomeFragment>
   void initState() {
     super.initState();
     init();
+    searchCont.text = appStore.searchQuery;
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey, '');
     });

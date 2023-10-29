@@ -85,7 +85,7 @@ class OrderListComponentState extends State<OrderListComponent> {
           ),
           8.height,
           Text(
-              '${widget.orderData!.totalItem.validate()} ${appStore.translate('items')}',
+              '${widget.orderData!.listOfOrder!.length.validate()} ${appStore.translate('items')}',
               style: boldTextStyle(size: 14)),
           Text(
               '${appStore.translate('order_on')} ${DateFormat('EEE d, MMM yyyy HH:mm:ss').format(widget.orderData!.createdAt!)}',

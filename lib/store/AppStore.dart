@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/AppLocalizations.dart';
 import 'package:fooddelivery/models/AddressModel.dart';
@@ -7,9 +6,6 @@ import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
-
-import '../main.dart';
-import '../models/RestaurantModel.dart';
 
 part 'AppStore.g.dart';
 
@@ -21,6 +17,9 @@ abstract class _AppStore with Store {
 
   @observable
   bool isLoading = false;
+
+  @observable
+  bool homescreenLoaded = false;
 
   @observable
   bool isNotificationOn = true;
@@ -88,6 +87,15 @@ abstract class _AppStore with Store {
   @observable
   String time = '';
 
+  @observable
+  bool containNoPrice = false;
+
+  @observable
+  bool isUploading = false;
+
+  @observable
+  String paymentMethod = '';
+
   @action
   void setDeliveryCharge(double value) {
     deliveryCharge = value;
@@ -95,7 +103,6 @@ abstract class _AppStore with Store {
 
   @action
   void setIsCalculating(bool value) {
-    print(value);
     isCalculating = value;
   }
 
@@ -251,5 +258,25 @@ abstract class _AppStore with Store {
   @action
   setTime(String tim) {
     time = tim;
+  }
+
+  @action
+  setContainNoPrice(bool val) {
+    containNoPrice = val;
+  }
+
+  @action
+  setIsUploading(bool val) {
+    isUploading = val;
+  }
+
+  @action
+  setPaymentMethod(String val) {
+    paymentMethod = val;
+  }
+
+  @action
+  setHomescrenLoaded(bool val) {
+    homescreenLoaded = val;
   }
 }

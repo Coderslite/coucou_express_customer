@@ -76,7 +76,7 @@ class FDMenuByCategoryScreenState extends State<FDMenuByCategoryScreen> {
 
                       return FoodMenuItemWidget(
                         food: food,
-                        tag: tag,
+                        // tag: tag,
                         onUpdate: () {
                           setState(() {});
                         },
@@ -99,21 +99,32 @@ class FDMenuByCategoryScreenState extends State<FDMenuByCategoryScreen> {
                 height: 60,
                 padding: EdgeInsets.only(left: 8, right: 8),
                 width: context.width(),
-                decoration: boxDecorationWithRoundedCorners(backgroundColor: colorPrimary),
+                decoration: boxDecorationWithRoundedCorners(
+                    backgroundColor: colorPrimary),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(appStore.translate('view_cart'), style: boldTextStyle(color: Colors.white)),
+                    Text(appStore.translate('view_cart'),
+                        style: boldTextStyle(color: Colors.white)),
                     Icon(Icons.navigate_next_outlined, color: Colors.white),
                   ],
                 ),
               ).onTap(() {
-                CartScreen(isRemove: false).launch(context);
+                CartScreen(
+                  isRemove: false,
+                  handleUpdate: handleUpdate(),
+                ).launch(context);
               }),
-            ).visible(appStore.mCartList.isNotEmpty && appStore.isLoggedIn).paddingAll(16),
+            )
+                .visible(appStore.mCartList.isNotEmpty && appStore.isLoggedIn)
+                .paddingAll(16),
           )
         ],
       ),
     );
+  }
+
+  handleUpdate() {
+    setState(() {});
   }
 }

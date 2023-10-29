@@ -4,6 +4,8 @@ import 'package:fooddelivery/screens/RequestListOrder.dart';
 import 'package:fooddelivery/screens/VoiceOrder.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../main.dart';
+import '../screens/LoginScreen.dart';
 import '../screens/RestaurantByCategoryScreen.dart';
 import '../utils/Common.dart';
 
@@ -46,15 +48,18 @@ class ServiceCategory extends StatelessWidget {
         ],
       ),
     ).onTap(() {
-      if (data.categoryName!.toLowerCase() == 'voice order') {
-        showModalBottomSheet(
-            context: context, builder: ((context) => VoiceOrder()));
-      } else if (data.categoryName!.toLowerCase() == 'yonnima') {
-        RequestOrder(isGrocery: true).launch(context);
-      } else {
-        RestaurantByCategoryScreen(catName: data.categoryName.validate())
-            .launch(context);
-      }
+      if (appStore.isLoggedIn) {
+        if (data.categoryName!.toLowerCase() == 'voice order') {
+          showModalBottomSheet(
+              context: context, builder: ((context) => VoiceOrder()));
+        } else if (data.categoryName!.toLowerCase() == 'yonnima') {
+          RequestOrder(isGrocery: true).launch(context);
+        } else {
+          RestaurantByCategoryScreen(catName: data.categoryName.validate())
+              .launch(context);
+        }
+      } else
+        LoginScreen().launch(context);
     });
   }
 }

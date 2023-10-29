@@ -14,10 +14,13 @@ import 'MyOrderScreen.dart';
 // ignore: must_be_immutable
 class CartScreen extends StatefulWidget {
   static String tag = '/CartScreen';
-  bool isRemove = false;
-  int? deliveryCharge = 0;
+  bool isRemove = true;
+  Function handleUpdate; // Add this line
 
-  CartScreen({required this.isRemove, this.deliveryCharge});
+   CartScreen({
+    required this.isRemove,
+    required this.handleUpdate, // Add this line
+  });
 
   @override
   CartScreenState createState() => CartScreenState();
@@ -35,7 +38,7 @@ class CartScreenState extends State<CartScreen> {
     setStatusBarColor(
       appStore.isDarkMode ? scaffoldColorDark : colorPrimary,
     );
-    setValue(AROUND_UCAD_CHARGES.toString(), widget.deliveryCharge);
+    // setValue(AROUND_UCAD_CHARGES.toString(), widget.deliveryCharge);
   }
 
   @override
@@ -59,49 +62,57 @@ class CartScreenState extends State<CartScreen> {
       appBar: appBarWidget(appStore.translate('cart'),
           color: appStore.isDarkMode ? scaffoldColorDark : colorPrimary,
           textColor: whiteColor),
-      body: Stack(
-        children: [
-          StreamBuilder<List<MenuModel>>(
-            stream: myCartDBService.cartList(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError)
-                return Text(snapshot.error.toString()).center();
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmpty) {
-                  return noDataWidget(
-                          errorMessage: appStore.translate('noDataFound'))
-                      .center();
-                } else {
-                  return ListView.builder(
-                    padding: EdgeInsets.only(top: 16, bottom: 16, right: 16),
-                    itemBuilder: (context1, index) => CartItemComponent(
-                      cartData: snapshot.data![index],
-                      onUpdate: () {
-                        if (widget.isRemove) {
-                          finish(context);
-                        }
-                        setState(() {});
-                      },
-                    ),
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                  );
-                }
-              }
-              return Loader().center();
-            },
-          ),
-          Observer(
-            builder: (_) => viewCartWidget(
-              context: context,
-              totalItemLength: '${appStore.mCartList.length}',
-              onTap: () {
-                MyOrderScreen().launch(context);
-              },
-            ).visible(appStore.mCartList.isNotEmpty && appStore.isLoggedIn),
-          )
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          myCartDBService.getCartList();
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<List<MenuModel>>(
+                stream: myCartDBService.cartList(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError)
+                    return Text(snapshot.error.toString()).center();
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.isEmpty) {
+                      return noDataWidget(
+                              errorMessage: appStore.translate('noDataFound'))
+                          .center();
+                    } else {
+                      return ListView.builder(
+                        padding:
+                            EdgeInsets.only(top: 16, bottom: 16, right: 16),
+                        itemBuilder: (context1, index) => CartItemComponent(
+                          cartData: snapshot.data![index],
+                          onUpdate: () {
+                            if (widget.isRemove) {
+                              finish(context);
+                            }
+                            widget.handleUpdate(); // Call the handleUpdate function
+                          },
+                        ),
+                        physics: AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                      );
+                    }
+                  }
+                  return Loader().center();
+                },
+              ),
+            ),
+            Observer(
+              builder: (_) => viewCartWidget(
+                context: context,
+                totalItemLength: '${appStore.mCartList.length}',
+                onTap: () {
+                  MyOrderScreen().launch(context);
+                },
+              ).visible(appStore.mCartList.isNotEmpty && appStore.isLoggedIn),
+            )
+          ],
+        ),
       ),
     );
   }

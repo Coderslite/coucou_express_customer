@@ -19,7 +19,10 @@ class RestaurantMenuScreen extends StatefulWidget {
   RestaurantModel? restaurant;
   final String? restId;
 
-  RestaurantMenuScreen({this.restaurant, this.restId,});
+  RestaurantMenuScreen({
+    this.restaurant,
+    this.restId,
+  });
 
   @override
   RestaurantMenuScreenState createState() => RestaurantMenuScreenState();

@@ -59,7 +59,7 @@ class CartItemComponentState extends State<CartItemComponent> {
       CommonKeys.qty: qty - 1,
       CommonKeys.updatedAt: DateTime.now(),
     };
-    if (widget.cartData!.qty == 0) {
+    if (qty == 0) {
       removeToCartItem(widget.cartData!.id);
     } else {
       await myCartDBService.updateDocument(req, id).then((value) {

@@ -37,8 +37,10 @@ class _FoodMenuItemWidgetState extends State<FoodMenuItemWidget> {
     }
     setState(() {});
   }
+  
 
   Future<void> addToCart() async {
+    print(widget.food!.ownedByUs);
     // if (getStringAsync(RESTAURANT_NAME) != widget.food!.restaurantName) {
     //   await Future.forEach(appStore.mCartList, (dynamic element) async {
     //     await myCartDBService.removeDocument(element.id);

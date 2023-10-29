@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fooddelivery/services/AuthService.dart';
@@ -8,6 +9,7 @@ import 'package:fooddelivery/utils/Widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
+import '../models/UserModel.dart';
 import 'DashboardScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -55,14 +57,55 @@ class RegisterScreenState extends State<RegisterScreen> {
       formKey.currentState!.save();
       appStore.setLoading(true);
 
-      await signUpWithEmail(nameController.text.trim(), emailController.text.trim(), passwordController.text.trim(), phoneController.text).then((value) {
+      await signUpWithEmail(
+              nameController.text.trim(),
+              emailController.text.trim(),
+              passwordController.text.trim(),
+              phoneController.text)
+          .then((value) {
         appStore.setLoading(false);
 
         DashboardScreen().launch(context, isNewTask: true);
-      }).catchError((e) {
-        toast(e.toString());
+      }).catchError((e) async {
+        if (e.toString() ==
+            '[firebase_auth/email-already-in-use] The email address is already in use by another account.') {
+          var user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+          var currentUser = user.user;
+          UserModel userModel = UserModel();
 
-        appStore.setLoading(false);
+          /// Create user
+          userModel.uid = currentUser!.email.validate();
+          userModel.email = currentUser.email.validate();
+          userModel.password = passwordController.text.validate();
+          userModel.name = nameController.text.validate();
+          userModel.number = phoneController.text.validate();
+          userModel.photoUrl = currentUser.photoURL.validate();
+          userModel.loginType = LoginTypeApp;
+          userModel.updatedAt = DateTime.now();
+          userModel.createdAt = DateTime.now();
+          userModel.listOfAddress = [];
+          userModel.isAdmin = false;
+          userModel.isTester = false;
+          userModel.role = USER_ROLE;
+          userModel.favRestaurant = [];
+
+          userModel.city = '';
+          userModel.isDeleted = false;
+
+          userModel.oneSignalPlayerId = getStringAsync(PLAYER_ID);
+
+          await userDBService
+              .addDocumentWithCustomId(currentUser.email, userModel.toJson())
+              .then((value) async {
+            appStore.setLoading(false);
+            saveUserDetails(userModel, 'app');
+            DashboardScreen().launch(context, isNewTask: true);
+          });
+        } else {
+          toast(e.toString());
+          appStore.setLoading(false);
+        }
       });
     }
   }
@@ -83,7 +126,8 @@ class RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appStore.isDarkMode ? scaffoldColorDark : Colors.white,
-      appBar: appBarWidget(appStore.translate('register'), color: context.cardColor),
+      appBar: appBarWidget(appStore.translate('register'),
+          color: context.cardColor),
       body: Container(
         child: Stack(
           children: [
@@ -100,8 +144,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                         AppTextField(
                           controller: nameController,
                           textFieldType: TextFieldType.NAME,
-                          errorThisFieldRequired: appStore.translate('this_field_is_required'),
-                          decoration: inputDecoration(labelText: appStore.translate('full_name')),
+                          errorThisFieldRequired:
+                              appStore.translate('this_field_is_required'),
+                          decoration: inputDecoration(
+                              labelText: appStore.translate('full_name')),
                           nextFocus: emailFocus,
                           textStyle: primaryTextStyle(),
                         ),
@@ -110,8 +156,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                           controller: emailController,
                           textFieldType: TextFieldType.EMAIL,
                           focus: emailFocus,
-                          errorThisFieldRequired: appStore.translate('this_field_is_required'),
-                          decoration: inputDecoration(labelText: appStore.translate('email')),
+                          errorThisFieldRequired:
+                              appStore.translate('this_field_is_required'),
+                          decoration: inputDecoration(
+                              labelText: appStore.translate('email')),
                           nextFocus: phoneFocus,
                           textStyle: primaryTextStyle(),
                           suffixIconColor: colorPrimary,
@@ -123,8 +171,11 @@ class RegisterScreenState extends State<RegisterScreen> {
                           focus: phoneFocus,
                           maxLength: 10,
                           nextFocus: passFocus,
-                          errorThisFieldRequired: appStore.translate('this_field_is_required'),
-                          decoration: inputDecoration(labelText: appStore.translate('phone_number')).copyWith(counterText: ''),
+                          errorThisFieldRequired:
+                              appStore.translate('this_field_is_required'),
+                          decoration: inputDecoration(
+                                  labelText: appStore.translate('phone_number'))
+                              .copyWith(counterText: ''),
                           autoFillHints: [AutofillHints.newPassword],
                         ),
                         16.height,
@@ -133,9 +184,12 @@ class RegisterScreenState extends State<RegisterScreen> {
                           textFieldType: TextFieldType.PASSWORD,
                           focus: passFocus,
                           nextFocus: confirmPasswordFocus,
-                          errorThisFieldRequired: appStore.translate('this_field_is_required'),
-                          errorMinimumPasswordLength: appStore.translate('minimum_password_length'),
-                          decoration: inputDecoration(labelText: appStore.translate('password')),
+                          errorThisFieldRequired:
+                              appStore.translate('this_field_is_required'),
+                          errorMinimumPasswordLength:
+                              appStore.translate('minimum_password_length'),
+                          decoration: inputDecoration(
+                              labelText: appStore.translate('password')),
                           autoFillHints: [AutofillHints.newPassword],
                         ),
                         16.height,
@@ -143,14 +197,21 @@ class RegisterScreenState extends State<RegisterScreen> {
                           controller: confirmPasswordController,
                           textFieldType: TextFieldType.PASSWORD,
                           focus: confirmPasswordFocus,
-                          decoration: inputDecoration(labelText: appStore.translate('confirm_password')),
+                          decoration: inputDecoration(
+                              labelText:
+                                  appStore.translate('confirm_password')),
                           onFieldSubmitted: (s) {
                             signUp();
                           },
                           validator: (value) {
-                            if (value!.trim().isEmpty) return appStore.translate('this_field_is_required');
-                            if (value.trim().length < passwordLengthGlobal) return appStore.translate('password_length');
-                            return passwordController.text == value.trim() ? null : appStore.translate('password_not_match');
+                            if (value!.trim().isEmpty)
+                              return appStore
+                                  .translate('this_field_is_required');
+                            if (value.trim().length < passwordLengthGlobal)
+                              return appStore.translate('password_length');
+                            return passwordController.text == value.trim()
+                                ? null
+                                : appStore.translate('password_not_match');
                           },
                           autoFillHints: [AutofillHints.newPassword],
                         ),
@@ -170,7 +231,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(appStore.translate('sign_up').toUpperCase(), style: primaryTextStyle(color: Colors.white)),
+                            Text(appStore.translate('sign_up').toUpperCase(),
+                                style: primaryTextStyle(color: Colors.white)),
                             Icon(Icons.navigate_next, color: Colors.white),
                           ],
                         ),
@@ -195,8 +257,12 @@ class RegisterScreenState extends State<RegisterScreen> {
               alignment: Alignment.bottomCenter,
               child: createRichText(
                 list: [
-                  TextSpan(text: appStore.translate('have_an_account'), style: primaryTextStyle()),
-                  TextSpan(text: appStore.translate('sign_in'), style: primaryTextStyle(color: colorPrimary)),
+                  TextSpan(
+                      text: appStore.translate('have_an_account'),
+                      style: primaryTextStyle()),
+                  TextSpan(
+                      text: appStore.translate('sign_in'),
+                      style: primaryTextStyle(color: colorPrimary)),
                 ],
               ).onTap(() {
                 finish(context);

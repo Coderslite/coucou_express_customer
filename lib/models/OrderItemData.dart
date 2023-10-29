@@ -8,6 +8,7 @@ class OrderItemData {
   String? itemName;
   int? itemPrice;
   int? qty;
+  bool? isSuggestedPrice;
   String? restaurantId;
   String? restaurantName;
 
@@ -19,6 +20,7 @@ class OrderItemData {
     this.itemName,
     this.itemPrice,
     this.qty,
+    this.isSuggestedPrice,
     this.restaurantId,
     this.restaurantName,
   });
@@ -32,6 +34,7 @@ class OrderItemData {
       categoryId: json[CommonKeys.categoryId],
       categoryName: json[CommonKeys.categoryName],
       qty: json[CommonKeys.qty],
+      isSuggestedPrice: json[CommonKeys.isSuggesttedPrice],
       restaurantId: json[CommonKeys.restaurantId],
     );
   }
@@ -45,6 +48,7 @@ class OrderItemData {
     data[CommonKeys.categoryId] = this.categoryId;
     data[CommonKeys.categoryName] = this.categoryName;
     data[CommonKeys.qty] = this.qty;
+    data[CommonKeys.isSuggesttedPrice] = this.isSuggestedPrice;
     data[CommonKeys.restaurantId] = this.restaurantId;
     return data;
   }

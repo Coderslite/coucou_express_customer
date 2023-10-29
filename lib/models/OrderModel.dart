@@ -30,6 +30,7 @@ class OrderModel {
   bool? taken;
   String? orderType;
   String? orderUrl;
+  List? receiptUrl;
   String? otherInformation;
 
   OrderModel({
@@ -59,6 +60,7 @@ class OrderModel {
     this.taken = false,
     this.orderType,
     this.orderUrl,
+    this.receiptUrl,
     this.otherInformation,
   });
 
@@ -98,6 +100,7 @@ class OrderModel {
       taken: json[OrderKeys.taken],
       orderType: json[OrderKeys.orderType],
       orderUrl: json[OrderKeys.orderUrl],
+      receiptUrl: json[OrderKeys.receiptUrl],
       otherInformation: json[MenuKeys.otherInformation],
     );
   }
@@ -132,6 +135,7 @@ class OrderModel {
     data[OrderKeys.taken] = this.taken;
     data[OrderKeys.orderType] = this.orderType;
     data[OrderKeys.orderUrl] = this.orderUrl;
+    data[OrderKeys.receiptUrl] = this.receiptUrl;
     data[MenuKeys.otherInformation] = this.otherInformation;
     return data;
   }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -187,8 +188,10 @@ Color getOrderStatusColor(String? orderStatus) {
 }
 
 String getAmount(int data) {
+  final numberFormat = NumberFormat.decimalPattern();
   // String data2 = "₹ " + data.toString() + " /-";
-  String data2 = "\$ " + data.toString() + "";
+  var amount = numberFormat.format(data);
+  String data2 = "\CFA " + amount.toString() + "";
 
   return data2;
 }

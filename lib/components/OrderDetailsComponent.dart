@@ -4,6 +4,8 @@ import 'package:fooddelivery/models/OrderItemData.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../utils/Constants.dart';
+
 // ignore: must_be_immutable
 class OrderDetailsComponent extends StatefulWidget {
   static String tag = '/OrderDetailsComponent';
@@ -44,7 +46,9 @@ class OrderDetailsComponentState extends State<OrderDetailsComponent> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: cachedImage(
-            widget.orderDetailsData!.image.validate(),
+            widget.orderDetailsData!.image == null
+                ? img
+                : widget.orderDetailsData!.image,
             height: 60,
             width: 60,
             fit: BoxFit.cover,

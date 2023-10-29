@@ -13,12 +13,14 @@ class MenuModel {
   String? restaurantLatitude;
   String? restaurantLongitude;
   String? categoryName;
+  bool? isSuggestedPrice;
   String? image;
   String? description;
   String? pavilionNo;
   String? deliveryAddress;
   String? deliveryLocation;
   DateTime? createdAt;
+  bool? ownedByUs;
   // DateTime? updatedAt;
   bool? isDeleted;
   bool? onGoogle;
@@ -37,6 +39,7 @@ class MenuModel {
     this.inStock,
     this.categoryId,
     this.categoryName,
+    required this.isSuggestedPrice,
     this.description,
     this.createdAt,
     // this.updatedAt,
@@ -46,6 +49,7 @@ class MenuModel {
     this.restaurantLongitude,
     this.qty = 1,
     this.isDeleted,
+    this.ownedByUs,
     this.onGoogle,
     this.isCheck = false,
     this.deliveryLocation,
@@ -63,6 +67,7 @@ class MenuModel {
       inStock: json[MenuKeys.inStock],
       categoryId: json[CommonKeys.categoryId],
       categoryName: json[MenuKeys.dishCategory],
+      isSuggestedPrice: json[CommonKeys.isSuggesttedPrice],
       description: json[MenuKeys.description],
       restaurantId: json[MenuKeys.restaurantId],
       qty: json['qty'] != null ? json['qty'] : 1,
@@ -84,6 +89,7 @@ class MenuModel {
       deliveryAddress: json[MenuKeys.deliveryAddress],
       pavilionNo: json[MenuKeys.pavilionNo],
       otherInformation: json[MenuKeys.otherInformation],
+      ownedByUs: json[RestaurantKeys.ownedByUs],
     );
   }
 
@@ -98,6 +104,7 @@ class MenuModel {
     data[MenuKeys.inStock] = this.inStock;
     data[MenuKeys.dishCategory] = this.categoryId;
     data[MenuKeys.dishCategory] = this.categoryName;
+    data[CommonKeys.isSuggesttedPrice] = this.isSuggestedPrice;
     data[MenuKeys.ingredientsTags] = this.ingredientsTags;
     data[MenuKeys.description] = this.description;
     data[MenuKeys.restaurantId] = this.restaurantId;
@@ -111,6 +118,7 @@ class MenuModel {
     data[MenuKeys.pavilionNo] = this.pavilionNo;
     data['qty'] = this.qty;
     data[MenuKeys.otherInformation] = this.otherInformation;
+    data[RestaurantKeys.ownedByUs] = this.ownedByUs;
     return data;
   }
 }

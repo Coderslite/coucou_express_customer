@@ -25,6 +25,7 @@ class RestaurantModel {
   String? restaurantCity;
   bool? onGoogle;
   String? withinUcad;
+  bool? ownedByUs;
 
   RestaurantModel({
     this.restaurantName,
@@ -49,41 +50,42 @@ class RestaurantModel {
     this.restaurantCity,
     this.onGoogle,
     this.withinUcad,
+    this.ownedByUs,
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
     return RestaurantModel(
-      id: json[CommonKeys.restaurantId],
-      restaurantName: json[RestaurantKeys.restaurantName],
-      photoUrl: json[RestaurantKeys.photoUrl],
-      openTime: json[RestaurantKeys.openTime],
-      closeTime: json[RestaurantKeys.closeTime],
-      restaurantAddress: json[RestaurantKeys.restaurantAddress],
-      restaurantPhoneNumber: json[RestaurantKeys.restaurantPhoneNumber],
-      restaurantDeliveryFees: json[RestaurantKeys.restaurantDeliveryFees],
-      restaurantEmail: json[RestaurantKeys.restaurantEmail],
-      isVegRestaurant: json[RestaurantKeys.isVegRestaurant],
-      isNonVegRestaurant: json[RestaurantKeys.isNonVegRestaurant],
-      isDealOfTheDay: json[RestaurantKeys.isDealOfTheDay],
-      couponCode: json[RestaurantKeys.couponCode],
-      couponDesc: json[RestaurantKeys.couponDesc],
-      caseSearch: json[RestaurantKeys.caseSearch] != null
-          ? List<String>.from(json[RestaurantKeys.caseSearch])
-          : [],
-      createdAt: json[CommonKeys.createdAt] != null
-          ? (json[CommonKeys.createdAt] as Timestamp).toDate()
-          : null,
-      updatedAt: json[CommonKeys.updatedAt] != null
-          ? (json[CommonKeys.updatedAt] as Timestamp).toDate()
-          : null,
-      restaurantDescription: json[RestaurantKeys.restaurantDescription],
-      catList: json[RestaurantKeys.catList] != null
-          ? List<String>.from(json[RestaurantKeys.catList])
-          : [],
-      restaurantCity: json[RestaurantKeys.restaurantCity],
-      onGoogle: json[RestaurantKeys.onGoogle],
-      withinUcad: json[RestaurantKeys.withinUcad],
-    );
+        id: json[CommonKeys.restaurantId],
+        restaurantName: json[RestaurantKeys.restaurantName],
+        photoUrl: json[RestaurantKeys.photoUrl],
+        openTime: json[RestaurantKeys.openTime],
+        closeTime: json[RestaurantKeys.closeTime],
+        restaurantAddress: json[RestaurantKeys.restaurantAddress],
+        restaurantPhoneNumber: json[RestaurantKeys.restaurantPhoneNumber],
+        restaurantDeliveryFees: json[RestaurantKeys.restaurantDeliveryFees],
+        restaurantEmail: json[RestaurantKeys.restaurantEmail],
+        isVegRestaurant: json[RestaurantKeys.isVegRestaurant],
+        isNonVegRestaurant: json[RestaurantKeys.isNonVegRestaurant],
+        isDealOfTheDay: json[RestaurantKeys.isDealOfTheDay],
+        couponCode: json[RestaurantKeys.couponCode],
+        couponDesc: json[RestaurantKeys.couponDesc],
+        caseSearch: json[RestaurantKeys.caseSearch] != null
+            ? List<String>.from(json[RestaurantKeys.caseSearch])
+            : [],
+        createdAt: json[CommonKeys.createdAt] != null
+            ? (json[CommonKeys.createdAt] as Timestamp).toDate()
+            : null,
+        updatedAt: json[CommonKeys.updatedAt] != null
+            ? (json[CommonKeys.updatedAt] as Timestamp).toDate()
+            : null,
+        restaurantDescription: json[RestaurantKeys.restaurantDescription],
+        catList: json[RestaurantKeys.catList] != null
+            ? List<String>.from(json[RestaurantKeys.catList])
+            : [],
+        restaurantCity: json[RestaurantKeys.restaurantCity],
+        onGoogle: json[RestaurantKeys.onGoogle],
+        withinUcad: json[RestaurantKeys.withinUcad],
+        ownedByUs: json[RestaurantKeys.ownedByUs]);
   }
 
   Map<String, dynamic> toJson() {
@@ -108,6 +110,7 @@ class RestaurantModel {
     data[RestaurantKeys.restaurantCity] = this.restaurantCity;
     data[RestaurantKeys.onGoogle] = this.onGoogle;
     data[RestaurantKeys.withinUcad] = this.withinUcad;
+    data[RestaurantKeys.ownedByUs] = this.ownedByUs;
     return data;
   }
 }

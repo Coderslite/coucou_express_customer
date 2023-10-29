@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
+import 'package:fooddelivery/models/OrderModel.dart';
 import 'package:fooddelivery/screens/DashboardScreen.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../screens/TrackOrder.dart';
+
 class OrderSuccessFullyDialog extends StatefulWidget {
   static String tag = '/OrderSuccessFullyDialog';
+  final String orderId;
+  OrderSuccessFullyDialog({required this.orderId});
 
   @override
   OrderSuccessFullyDialogState createState() => OrderSuccessFullyDialogState();
@@ -42,7 +47,8 @@ class OrderSuccessFullyDialogState extends State<OrderSuccessFullyDialog> {
           fit: BoxFit.fill,
         ).cornerRadiusWithClipRRectOnly(topRight: 12, topLeft: 12),
         16.height,
-        Text(appStore.translate('order_placed'), style: boldTextStyle(size: 18)),
+        Text(appStore.translate('order_placed'),
+            style: boldTextStyle(size: 18)),
         16.height,
         Text(
           appStore.translate('placing_order_Thanks'),
@@ -51,12 +57,17 @@ class OrderSuccessFullyDialogState extends State<OrderSuccessFullyDialog> {
         ).paddingOnly(left: 8, right: 8),
         30.height,
         AppButton(
-          shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+          shapeBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30))),
           width: context.width(),
           color: colorPrimary,
-          child: Text(appStore.translate('continue'), style: boldTextStyle(color: Colors.white)),
+          child: Text(appStore.translate('continue'),
+              style: boldTextStyle(color: Colors.white)),
           onTap: () {
-            DashboardScreen().launch(context, isNewTask: true);
+            TrackOrder(
+              orderId: widget.orderId,
+              isNew: true,
+            ).launch(context);
           },
         ).paddingOnly(left: 8, right: 8, bottom: 30)
       ],

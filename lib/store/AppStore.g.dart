@@ -41,6 +41,22 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  late final _$homescreenLoadedAtom =
+      Atom(name: '_AppStore.homescreenLoaded', context: context);
+
+  @override
+  bool get homescreenLoaded {
+    _$homescreenLoadedAtom.reportRead();
+    return super.homescreenLoaded;
+  }
+
+  @override
+  set homescreenLoaded(bool value) {
+    _$homescreenLoadedAtom.reportWrite(value, super.homescreenLoaded, () {
+      super.homescreenLoaded = value;
+    });
+  }
+
   late final _$isNotificationOnAtom =
       Atom(name: '_AppStore.isNotificationOn', context: context);
 
@@ -390,6 +406,54 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  late final _$containNoPriceAtom =
+      Atom(name: '_AppStore.containNoPrice', context: context);
+
+  @override
+  bool get containNoPrice {
+    _$containNoPriceAtom.reportRead();
+    return super.containNoPrice;
+  }
+
+  @override
+  set containNoPrice(bool value) {
+    _$containNoPriceAtom.reportWrite(value, super.containNoPrice, () {
+      super.containNoPrice = value;
+    });
+  }
+
+  late final _$isUploadingAtom =
+      Atom(name: '_AppStore.isUploading', context: context);
+
+  @override
+  bool get isUploading {
+    _$isUploadingAtom.reportRead();
+    return super.isUploading;
+  }
+
+  @override
+  set isUploading(bool value) {
+    _$isUploadingAtom.reportWrite(value, super.isUploading, () {
+      super.isUploading = value;
+    });
+  }
+
+  late final _$paymentMethodAtom =
+      Atom(name: '_AppStore.paymentMethod', context: context);
+
+  @override
+  String get paymentMethod {
+    _$paymentMethodAtom.reportRead();
+    return super.paymentMethod;
+  }
+
+  @override
+  set paymentMethod(String value) {
+    _$paymentMethodAtom.reportWrite(value, super.paymentMethod, () {
+      super.paymentMethod = value;
+    });
+  }
+
   late final _$setLoggedInAsyncAction =
       AsyncAction('_AppStore.setLoggedIn', context: context);
 
@@ -637,10 +701,55 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  dynamic setContainNoPrice(bool val) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setContainNoPrice');
+    try {
+      return super.setContainNoPrice(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setIsUploading(bool val) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setIsUploading');
+    try {
+      return super.setIsUploading(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setPaymentMethod(String val) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setPaymentMethod');
+    try {
+      return super.setPaymentMethod(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setHomescrenLoaded(bool val) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setHomescrenLoaded');
+    try {
+      return super.setHomescrenLoaded(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoggedIn: ${isLoggedIn},
 isLoading: ${isLoading},
+homescreenLoaded: ${homescreenLoaded},
 isNotificationOn: ${isNotificationOn},
 isDarkMode: ${isDarkMode},
 isAdmin: ${isAdmin},
@@ -662,7 +771,10 @@ isCalculating: ${isCalculating},
 searchType: ${searchType},
 searchQuery: ${searchQuery},
 distance: ${distance},
-time: ${time}
+time: ${time},
+containNoPrice: ${containNoPrice},
+isUploading: ${isUploading},
+paymentMethod: ${paymentMethod}
     ''';
   }
 }

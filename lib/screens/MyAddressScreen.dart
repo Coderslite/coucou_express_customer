@@ -72,156 +72,149 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                 title: appStore.translate('add_address'),
                 titleTextStyle: primaryTextStyle(color: colorPrimary),
                 onTap: () async {
-                  if (userLatitude != null) {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (_) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Where is the address located ?",
-                                    style: boldTextStyle(),
-                                  ),
-                                  address == ''
-                                      ? DropdownButtonFormField(
-                                          decoration: InputDecoration(
-                                            prefixIcon: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  address = '';
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                              icon: Icon(Icons.delete_sweep),
-                                            ),
+                  showModalBottomSheet(
+                      context: context,
+                      backgroundColor: context.scaffoldBackgroundColor,
+                      builder: (_) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Where is the address located ?",
+                                  style: boldTextStyle(),
+                                ),
+                                address == ''
+                                    ? DropdownButtonFormField(
+                                        decoration: InputDecoration(
+                                          prefixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                address = '';
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(Icons.delete_sweep),
                                           ),
-                                          items: ["Inside UCAD", "Around UCAD"]
-                                              .map((e) => DropdownMenuItem(
-                                                    child: Text(
-                                                      e.toString(),
-                                                    ),
-                                                    value: e,
-                                                  ))
-                                              .toList(),
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return "Field is Required";
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (val) {
-                                            address = val.toString();
-                                          })
-                                      : DropdownButtonFormField(
-                                          value: address,
-                                          decoration: InputDecoration(
-                                            prefixIcon: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  address = '';
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                              icon: Icon(Icons.delete_sweep),
-                                            ),
-                                          ),
-                                          items: ["Inside UCAD", "Around UCAD"]
-                                              .map((e) => DropdownMenuItem(
-                                                    child: Text(
-                                                      e.toString(),
-                                                    ),
-                                                    value: e,
-                                                  ))
-                                              .toList(),
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return "Field is Required";
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (val) {
-                                            address = val.toString();
-                                          }),
-                                  ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: seaGreen),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          if (address == "Inside UCAD") {
-                                            Navigator.pop(context);
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  return AlertDialog(
-                                                    title: Text("Add Address"),
-                                                    content: Form(
-                                                      key: addressFormKey,
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          TextFormField(
-                                                            onChanged: (value) {
-                                                              pavilionNo = value
-                                                                  .toString();
-                                                            },
-                                                            decoration:
-                                                                InputDecoration(
-                                                                    hintText:
-                                                                        "Enter pavilion/Room Number "),
-                                                          ),
-                                                          8.height,
-                                                          TextFormField(
-                                                            onChanged: (value) {
-                                                              otherDetails = value
-                                                                  .toString();
-                                                            },
-                                                            decoration:
-                                                                InputDecoration(
-                                                                    hintText:
-                                                                        "Add additional information about the address"),
-                                                          ),
-                                                          ElevatedButton(
-                                                              style: ElevatedButton
-                                                                  .styleFrom(
-                                                                      backgroundColor:
-                                                                          seaGreen),
-                                                              onPressed: () {
-                                                                validate();
-                                                              },
-                                                              child:
-                                                                  Text("Save"))
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
-                                          } else {
-                                            Navigator.pop(context);
-                                            MapAddressScreen(
-                                                    userLatitude: userLatitude,
-                                                    userLongitude:
-                                                        userLongitude)
-                                                .launch(context);
+                                        ),
+                                        items: ["Inside UCAD", "Around UCAD"]
+                                            .map((e) => DropdownMenuItem(
+                                                  child: Text(
+                                                    e.toString(),
+                                                  ),
+                                                  value: e,
+                                                ))
+                                            .toList(),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "Field is Required";
                                           }
+                                          return null;
+                                        },
+                                        onChanged: (val) {
+                                          address = val.toString();
+                                        })
+                                    : DropdownButtonFormField(
+                                        value: address,
+                                        decoration: InputDecoration(
+                                          prefixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                address = '';
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(Icons.delete_sweep),
+                                          ),
+                                        ),
+                                        items: ["Inside UCAD", "Around UCAD"]
+                                            .map((e) => DropdownMenuItem(
+                                                  child: Text(
+                                                    e.toString(),
+                                                  ),
+                                                  value: e,
+                                                ))
+                                            .toList(),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "Field is Required";
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (val) {
+                                          address = val.toString();
+                                        }),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: seaGreen),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        if (address == "Inside UCAD") {
+                                          Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                return AlertDialog(
+                                                  title: Text("Add Address"),
+                                                  content: Form(
+                                                    key: addressFormKey,
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        TextFormField(
+                                                          onChanged: (value) {
+                                                            pavilionNo = value
+                                                                .toString();
+                                                          },
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Enter pavilion/Room Number "),
+                                                        ),
+                                                        8.height,
+                                                        TextFormField(
+                                                          onChanged: (value) {
+                                                            otherDetails = value
+                                                                .toString();
+                                                          },
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Add additional information about the address"),
+                                                        ),
+                                                        ElevatedButton(
+                                                            style: ElevatedButton
+                                                                .styleFrom(
+                                                                    backgroundColor:
+                                                                        seaGreen),
+                                                            onPressed: () {
+                                                              validate();
+                                                            },
+                                                            child: Text("Save"))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                        } else {
+                                          Navigator.pop(context);
+                                          MapAddressScreen(
+                                                  userLatitude: userLatitude,
+                                                  userLongitude: userLongitude)
+                                              .launch(context);
                                         }
-                                      },
-                                      child: Text("Proceed")),
-                                ],
-                              ),
+                                      }
+                                    },
+                                    child: Text("Proceed")),
+                              ],
                             ),
-                          );
-                        });
-                  } else {
-                    setState(() {
-                      getCurrentUserLocation();
-                    });
-                  }
+                          ),
+                        );
+                      });
                 },
               ),
               Stack(
@@ -231,7 +224,8 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                     builder: (_, snap) {
                       if (snap.hasData) {
                         return AddressListComponent(
-                            userData: snap.data, isOrder: widget.isOrder);
+                            userData: snap.data!,
+                            isOrder: widget.isOrder == true ? true : false);
                       } else {
                         return snapWidgetHelper(snap);
                       }

@@ -142,6 +142,7 @@ class MapAddressItemComponentState extends State<MapAddressItemComponent> {
                       textFieldType: TextFieldType.MULTILINE,
                       maxLines: 4,
                       autoFocus: false,
+                      isValidationRequired: false,
                       textStyle: primaryTextStyle(),
                       decoration: labelInputDecoration(
                           labelText:

@@ -18,7 +18,8 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 Future<User?> _signInWithGoogle() async {
   GoogleSignInAccount googleSignInAccount = (await googleSignIn.signIn())!;
 
-  final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+  final GoogleSignInAuthentication googleSignInAuthentication =
+      await googleSignInAccount.authentication;
 
   final AuthCredential credential = GoogleAuthProvider.credential(
     accessToken: googleSignInAuthentication.accessToken,
@@ -37,15 +38,19 @@ Future<User?> _signInWithGoogle() async {
 }
 
 Future<User?> _signInWithEmail(String email, String password) async {
-  return await auth.signInWithEmailAndPassword(email: email, password: password).then((value) {
+  return await auth
+      .signInWithEmailAndPassword(email: email, password: password)
+      .then((value) {
     return value.user;
   }).catchError((e) {
     throw e;
   });
 }
 
-Future<void> signUpWithEmail(String name, String email, String password, String phone) async {
-  UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+Future<void> signUpWithEmail(
+    String name, String email, String password, String phone) async {
+  UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+      email: email, password: password);
 
   if (userCredential.user != null) {
     User currentUser = userCredential.user!;
@@ -72,7 +77,9 @@ Future<void> signUpWithEmail(String name, String email, String password, String 
 
     userModel.oneSignalPlayerId = getStringAsync(PLAYER_ID);
 
-    await userDBService.addDocumentWithCustomId(currentUser.uid, userModel.toJson()).then((value) async {
+    await userDBService
+        .addDocumentWithCustomId(currentUser.uid, userModel.toJson())
+        .then((value) async {
       await signInWithEmail(email: email, password: password).then((value) {
         //
       });
@@ -120,7 +127,9 @@ Future<void> signInWithGoogle() async {
       userModel.isDeleted = false;
       userModel.oneSignalPlayerId = getStringAsync(PLAYER_ID);
 
-      await userDBService.addDocumentWithCustomId(currentUser.uid, userModel.toJson()).then((value) {
+      await userDBService
+          .addDocumentWithCustomId(currentUser.uid, userModel.toJson())
+          .then((value) {
         //
       }).catchError((e) {
         throw e;
@@ -135,7 +144,9 @@ Future<void> signInWithGoogle() async {
 Future<UserModel> signInWithEmail({String? email, String? password}) async {
   if (await userDBService.isUserExist(email, LoginTypeApp)) {
     return await _signInWithEmail(email!, password!).then((user) async {
-      return await userDBService.loginWithEmail(email: user!.email, password: password).then((value) async {
+      return await userDBService
+          .loginWithEmail(email: user!.email, password: password)
+          .then((value) async {
         await saveUserDetails(value, LoginTypeApp);
         if (value.role == USER_ROLE) {
           ///Return user data
@@ -158,8 +169,9 @@ Future<void> saveUserDetails(UserModel userModel, String loginType) async {
   await setValue(ADMIN, userModel.isAdmin.validate());
   await setValue(TESTER, userModel.isTester.validate());
   await setValue(USER_ROLE, userModel.role.validate());
-  await setValue(FAVORITE_RESTAURANT, jsonEncode(userModel.favRestaurant.validate()));
-
+  await setValue(
+      FAVORITE_RESTAURANT, jsonEncode(userModel.favRestaurant.validate()));
+  print(userModel.uid);
   await appStore.setLoggedIn(true);
   await appStore.setUserId(userModel.uid);
   await appStore.setFullName(userModel.name);
@@ -233,7 +245,8 @@ Future<void> forgotPassword({required String email}) async {
   });
 }
 
-Future<void> loginWithOTP(BuildContext context, String phoneNumber, {bool aIsResend = false, int? forceResendingToken = 0}) async {
+Future<void> loginWithOTP(BuildContext context, String phoneNumber,
+    {bool aIsResend = false, int? forceResendingToken = 0}) async {
   appStore.setLoading(true);
   await auth.verifyPhoneNumber(
     phoneNumber: phoneNumber,
@@ -253,7 +266,12 @@ Future<void> loginWithOTP(BuildContext context, String phoneNumber, {bool aIsRes
     },
     codeSent: (String verificationId, int? resendToken) async {
       appStore.setLoading(false);
-      OTPScreen(verificationId: verificationId, isCodeSent: true, phoneNumber: phoneNumber, resendToken: resendToken).launch(context);
+      OTPScreen(
+              verificationId: verificationId,
+              isCodeSent: true,
+              phoneNumber: phoneNumber,
+              resendToken: resendToken)
+          .launch(context);
     },
     codeAutoRetrievalTimeout: (String verificationId) {
       //

@@ -13,6 +13,7 @@ class CommonKeys {
   static String rating = 'rating';
   static String reviewTags = 'reviewTags';
   static String restaurantId = 'restaurantId';
+  static String isSuggesttedPrice = 'isSuggestedPrice';
 }
 
 class UserKeys {
@@ -67,6 +68,7 @@ class RestaurantKeys {
   static String deliveryCharge = 'deliveryCharge';
   static String onGoogle = 'onGoogle';
   static String withinUcad = 'withinUcad';
+  static String ownedByUs = 'ownedByUs';
 }
 
 class OrderKeys {
@@ -87,6 +89,7 @@ class OrderKeys {
   static String taken = 'taken';
   static String orderType = 'orderType';
   static String orderUrl = 'orderUrl';
+  static String receiptUrl = 'receiptUrl';
 }
 
 class CategoryKeys {
@@ -128,14 +131,14 @@ class RestaurantReviewKeys {
 class AdKeys {
   static String id = 'id';
   static String title = 'title';
- static String? type ='type';
- static String? description = 'description';
- static String? image ='image';
- static String? buttonColor ='buttonColor';
- static String? buttonText = 'buttonText';
- static String? buttonTextColor= 'buttonTextColor';
- static String? textColor ='textColor';
- static String? restuarantId='restaurantId';
+  static String? type = 'type';
+  static String? description = 'description';
+  static String? image = 'image';
+  static String? buttonColor = 'buttonColor';
+  static String? buttonText = 'buttonText';
+  static String? buttonTextColor = 'buttonTextColor';
+  static String? textColor = 'textColor';
+  static String? restuarantId = 'restaurantId';
 }
 
 class AddressKeys {

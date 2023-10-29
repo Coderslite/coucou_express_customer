@@ -71,14 +71,28 @@ class MyOrderListItemComponentState extends State<MyOrderListItemComponent> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        '\$${widget.myOrderData!.itemPrice == null ? 0 : widget.myOrderData!.itemPrice} x ${widget.myOrderData!.qty}',
+                        widget.myOrderData!.itemPrice == null
+                            ? "x " + widget.myOrderData!.qty.toString()
+                            : '${getAmount(
+                                widget.myOrderData!.itemPrice == null
+                                    ? 0
+                                    : widget.myOrderData!.itemPrice!,
+                              )} x ${widget.myOrderData!.qty}',
                         style: secondaryTextStyle()),
                     Text(
-                        getAmount(widget.myOrderData!.itemPrice == null
-                            ? 0 * widget.myOrderData!.qty!
-                            : (widget.myOrderData!.itemPrice! *
-                                widget.myOrderData!.qty!)),
-                        style: boldTextStyle(size: 14)),
+                        widget.myOrderData!.itemPrice == null
+                            ? 'Price not available'
+                            : getAmount(
+                                widget.myOrderData!.itemPrice == null
+                                    ? 0 * widget.myOrderData!.qty!
+                                    : (widget.myOrderData!.itemPrice! *
+                                        widget.myOrderData!.qty!),
+                              ),
+                        style: boldTextStyle(
+                            size: 14,
+                            color: widget.myOrderData!.itemPrice == null
+                                ? orangeRed
+                                : context.iconColor)),
                   ],
                 )
               ],

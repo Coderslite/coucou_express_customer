@@ -1,5 +1,6 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/components/DeliveryBoyReviewDialog.dart';
 import 'package:fooddelivery/components/OrderDetailsComponent.dart';
@@ -13,6 +14,7 @@ import 'package:fooddelivery/utils/Constants.dart';
 import 'package:fooddelivery/utils/ModalKeys.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'TrackOrder.dart';
 
@@ -252,7 +254,8 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     color: mediumSeaGreen, size: 12)),
                           ).paddingOnly(left: 16, top: 16).onTap(() {
                             TrackOrder(
-                              orderModel: widget.orderData!,
+                              isNew: false,
+                              orderId: widget.orderData!.id!,
                             ).launch(context);
                           }),
                           16.height,
@@ -311,6 +314,166 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ).visible(
                 !isReview && widget.orderData!.orderStatus == ORDER_COMPLETE),
             8.height,
+            TextButton(
+                    onPressed: () {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (_) {
+                            return Material(
+                              child: Stack(
+                                alignment: Alignment.topLeft,
+                                children: [
+                                  PageView.builder(
+                                      itemCount:
+                                          widget.orderData!.receiptUrl!.length,
+                                      itemBuilder: (context, index) {
+                                        var image = widget
+                                            .orderData!.receiptUrl![index];
+                                        return InteractiveViewer(
+                                          child: cachedImage(
+                                            image,
+                                            fit: BoxFit.contain,
+                                            // width: MediaQuery.of(context).size.width,
+                                            // height: MediaQuery.of(context).size.height,
+                                          ),
+                                        );
+                                      }),
+                                  Positioned(
+                                    child: BackButton(),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
+                    },
+                    child: Text(
+                      "View Receipt",
+                      style: primaryTextStyle(color: mediumSeaGreen),
+                    ))
+                .paddingLeft(16)
+                .visible(widget.orderData!.receiptUrl == null ? false : true),
+            10.height,
+            Text(
+              "Payment Information",
+              style: boldTextStyle(),
+            ).paddingLeft(16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Payment Method: ",
+                  style: primaryTextStyle(size: 14),
+                ),
+                Row(
+                  children: [
+                    cachedImage(
+                      widget.orderData!.paymentMethod == 'CASH'
+                          ? 'assets/cash.png'
+                          : widget.orderData!.paymentMethod == 'WAVE'
+                              ? 'assets/wave.png'
+                              : 'assets/orange.png',
+                      width: 50,
+                      height: 50,
+                    ).visible(widget.orderData!.paymentMethod!.isNotEmpty),
+                    10.width,
+                    Text(
+                      widget.orderData!.paymentMethod.validate(),
+                      style: boldTextStyle(size: 18),
+                    ),
+                  ],
+                ),
+              ],
+            ).paddingLeft(16),
+            10.height,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Payment Status: ",
+                  style: primaryTextStyle(size: 14),
+                ),
+                Text(
+                  widget.orderData!.paymentStatus.validate(),
+                  style: boldTextStyle(
+                      size: 18,
+                      color: widget.orderData!.paymentStatus == 'Received'
+                          ? mediumSeaGreen
+                          : context.iconColor),
+                ),
+              ],
+            ).paddingLeft(16),
+            10.height,
+            Divider(thickness: 3),
+            Text(
+              "Drivers Information",
+              style: boldTextStyle(),
+            ).paddingLeft(16),
+            widget.orderData!.deliveryBoyId == null
+                ? Text("No driver assigned yet").center()
+                : StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(widget.orderData!.deliveryBoyId)
+                        .snapshots(),
+                    builder: ((context, snapshot) {
+                      if (snapshot.hasData) {
+                        var data = snapshot.data!.data();
+                        return Column(
+                          children: [
+                            10.height,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    data!['photoUrl'] == '' ||
+                                            data['photoUrl'] == null
+                                        ? CircleAvatar(
+                                            backgroundColor: lightGrey,
+                                            child: Icon(
+                                              Icons.person,
+                                              color: mediumSeaGreen,
+                                            ),
+                                          )
+                                        : cachedImage(data['photoUrl'],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover),
+                                    5.width,
+                                    Text(
+                                      data['name'],
+                                      style: boldTextStyle(size: 14),
+                                    ),
+                                  ],
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    launch('tel://${data['phoneNumber']}');
+                                  },
+                                  child: Container(
+                                          decoration: BoxDecoration(
+                                              color: mediumSeaGreen,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          padding: EdgeInsets.all(3),
+                                          child: Icon(
+                                            Icons.call,
+                                            color: white,
+                                          ).center())
+                                      .paddingRight(16),
+                                )
+                              ],
+                            ),
+                            10.height,
+                          ],
+                        ).paddingLeft(16);
+                      } else {
+                        return Text("");
+                      }
+                    }),
+                  ),
+            10.height,
             Divider(thickness: 3),
             16.height,
             Text(appStore.translate('order_items'), style: boldTextStyle())
@@ -365,16 +528,17 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       ).paddingOnly(right: 16, left: 16),
                     ],
                   )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.all(16),
-                    itemCount: widget.listOfOrder!.length,
-                    itemBuilder: (context, index) {
-                      return OrderDetailsComponent(
-                          orderDetailsData: widget.listOfOrder![index]);
-                    },
-                  ),
+                : Container(),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.all(16),
+              itemCount: widget.listOfOrder!.length,
+              itemBuilder: (context, index) {
+                return OrderDetailsComponent(
+                    orderDetailsData: widget.listOfOrder![index]);
+              },
+            ),
           ],
         ),
       ),
@@ -389,7 +553,13 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Delivery Fee', style: primaryTextStyle(size: 15)),
-                Text(getAmount((widget.orderData!.deliveryCharge.validate())),
+                Text(
+                    widget.orderData!.deliveryCharge == 0 ||
+                            widget.orderData!.deliveryCharge == null
+                        ? "Not Available"
+                        : getAmount((int.parse(
+                                widget.orderData!.deliveryCharge.toString())
+                            .toInt())),
                     style: boldTextStyle(size: 15)),
               ],
             ).paddingOnly(left: 16, right: 16),
@@ -403,7 +573,8 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             widget.orderData!.totalAmount == null
                         ? "Not Available"
                         : getAmount((widget.orderData!.totalAmount.validate() +
-                                widget.orderData!.deliveryCharge.validate())
+                                int.parse(widget.orderData!.deliveryCharge
+                                    .toString()))
                             .validate()),
                     style: boldTextStyle(
                         size: 16,

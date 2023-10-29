@@ -65,10 +65,13 @@ class MyOrderUserInfoComponentState extends State<MyOrderUserInfoComponent> {
             ),
             Observer(
               builder: (_) => Text(
-                appStore.addressModel!.addressLocation != null
-                    ? appStore.addressModel!.addressLocation == "Inside UCAD"
-                        ? appStore.addressModel!.pavilionNo.validate()
-                        : appStore.addressModel!.address.validate()
+                appStore.addressModel != null
+                    ? appStore.addressModel!.addressLocation != null
+                        ? appStore.addressModel!.addressLocation ==
+                                "Inside UCAD"
+                            ? appStore.addressModel!.pavilionNo.validate()
+                            : appStore.addressModel!.address.validate()
+                        : appStore.translate('select_shipping_address')
                     : appStore.translate('select_shipping_address'),
                 style: secondaryTextStyle(),
                 maxLines: 2,
@@ -83,9 +86,11 @@ class MyOrderUserInfoComponentState extends State<MyOrderUserInfoComponent> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: viewLineColor)),
           child: Text(
-            appStore.addressModel!.addressLocation == null
+            appStore.addressModel == null
                 ? appStore.translate('select_address')
-                : appStore.translate('change_address'),
+                : appStore.addressModel!.addressLocation == null
+                    ? appStore.translate('select_address')
+                    : appStore.translate('change_address'),
             style: secondaryTextStyle(color: colorPrimary),
           ),
         ).onTap(() async {

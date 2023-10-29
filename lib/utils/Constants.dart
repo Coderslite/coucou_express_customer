@@ -110,3 +110,8 @@ const GOOGLE_MAP_API_KEY = 'AIzaSyDyo03HSxBbnRA1tKm2fEGKzyNS7gHOX3k';
 
 const FIREBASE_URL =
     'https://us-central1-coucouexpress-502d4.cloudfunctions.net/api';
+
+const img =
+    "https://cdn.pixabay.com/photo/2017/06/10/07/18/list-2389219_1280.png";
+
+// const avatar = "";
