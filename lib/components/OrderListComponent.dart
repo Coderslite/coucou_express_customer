@@ -100,17 +100,17 @@ class OrderListComponentState extends State<OrderListComponent> {
                 decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(8),
                     backgroundColor: getOrderStatusColor(
-                            widget.orderData!.orderStatus == NO_DRIVER_AVAILABLE
+                            widget.orderData!.orderStatus == ORDER_UPDATED
                                 ? ORDER_PENDING
                                 : widget.orderData!.orderStatus)
                         .withOpacity(0.05)),
                 child: Text(
-                    widget.orderData!.orderStatus == NO_DRIVER_AVAILABLE
+                    widget.orderData!.orderStatus == ORDER_UPDATED
                         ? ORDER_PENDING
                         : widget.orderData!.orderStatus.validate(),
                     style: boldTextStyle(
                         color: getOrderStatusColor(
-                            widget.orderData!.orderStatus == NO_DRIVER_AVAILABLE
+                            widget.orderData!.orderStatus == ORDER_UPDATED
                                 ? ORDER_PENDING
                                 : widget.orderData!.orderStatus),
                         size: 12)),

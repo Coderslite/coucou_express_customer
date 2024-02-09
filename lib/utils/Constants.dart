@@ -32,16 +32,17 @@ const LoginTypeOTP = 'otp';
 const LoginTypeApple = 'apple';
 
 /*ORDER STATUS*/
-const ORDER_RECEIVED = 'Order Received';
 const ORDER_PENDING = 'Pending';
+const ORDER_RECEIVED = 'Received';
+const ORDER_ACCEPTED = 'Accepted';
 const ORDER_PICKUP = 'Pickup';
-const ORDER_COOKING = 'Cooking';
-const ORDER_ASSIGNED = 'Assigned';
-const ORDER_READY = 'Ready';
-const ORDER_DELIVERING = 'Delivering';
-const ORDER_COMPLETE = 'Completed';
+const ORDER_DELIVERED = 'Delivered';
 const ORDER_CANCELLED = 'Cancelled';
-const NO_DRIVER_AVAILABLE = 'NoDriverAvailable';
+const ORDER_UPDATED = 'Order Updated';
+// const ORDER_COOKING = 'Cooking';
+// const ORDER_ASSIGNED = 'Assigned';
+// const ORDER_READY = 'Ready';
+// const ORDER_DELIVERING = 'Delivering';
 
 /* payment method*/
 const CASH_ON_DELIVERY = 'COD';

@@ -87,7 +87,7 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> {
         });
       }
 
-      if (widget.orderData!.orderStatus == ORDER_COMPLETE) {
+      if (widget.orderData!.orderStatus == ORDER_DELIVERED) {
         await showInDialog(
           context,
           barrierDismissible: true,

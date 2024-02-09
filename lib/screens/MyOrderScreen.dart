@@ -74,68 +74,71 @@ class MyOrderScreenState extends State<MyOrderScreen> {
     setState(() {});
   }
 
-  void calculateDeliveryCharges() async {
+  Future<void> calculateDeliveryCharges() async {
     appStore.setIsCalculating(true);
     deliveryFee = 0;
     appStore.setDeliveryCharge(deliveryFee);
-
-    if (appStore.addressModel?.addressLocation == null) {
-      print("Address is null");
-    } else {
-      print(appStore.addressModel!.address);
-
-      if (appStore.addressModel!.addressLocation == "Inside UCAD") {
-        totalQty = appStore.mCartList.fold<int>(0, (total, element) {
-          if (element!.ownedByUs == true &&
-              appStore.addressModel!.addressLocation == 'Inside UCAD') {
-            return 0;
-          }
-          return total + (element.qty ?? 0);
-        });
-        print("Within UCAD");
+    appStore.mCartList.forEach((element) {
+      if (element?.isSuggestedPrice == true || element?.itemPrice == null) {
+        print("Price is not available");
+        print(element?.itemPrice);
+        appStore.setContainNoPrice(true);
+      }
+    });
+    setState(() {});
+    for (var element in appStore.mCartList) {
+      if (element!.ownedByUs == true &&
+          appStore.addressModel!.addressLocation == 'Inside UCAD') {
+        totalQty += 0;
+        appStore.setDeliveryFeeAvailable(true);
       } else {
-        if (appStore.addressModel!.address?.isNotEmpty == true) {
-          try {
-            LatLng userLocation = await getLatLngFromLocationName(
-                appStore.addressModel!.address!);
-            print("User location: $userLocation");
-            double distance = calculateDistance(UCAD_LOCATION, userLocation);
-            double charge = distance * AROUND_UCAD_CHARGES;
-            deliveryFee += charge;
-            print(deliveryFee);
-          } catch (e) {
-            print("Error getting user location: $e");
+        if (appStore.addressModel!.addressLocation == "Inside UCAD" &&
+            (element.restaurantLocation == 'Inside UCAD' ||
+                element.restaurantLocation == '')) {
+          totalQty += element.qty!;
+          appStore.setDeliveryFeeAvailable(true);
+        } else if ((appStore.addressModel!.addressLocation == "Inside UCAD" &&
+                element.restaurantLocation == 'Around UCAD') ||
+            (element.restaurantLocation == '' &&
+                appStore.addressModel!.addressLocation == 'Around UCAD')) {
+          totalAroundOrder += 1;
+          appStore.setDeliveryFeeAvailable(true);
+        } else {
+          var resLatLng = await getLatLngFromLocationName(
+              element.restaurantAddress.toString());
+          print(resLatLng);
+          if (resLatLng == LatLng(0, 0)) {
+            print("error fetching latlng");
+            toast("error getting restaurant location on google map");
+            appStore.setDeliveryFeeAvailable(false);
+          } else {
+            appStore.setDeliveryFeeAvailable(true);
+            var distance = calculateDistance(resLatLng, UCAD_LOCATION);
+            appStore.setDistance(distance.toString());
+            if (distance < 1) {
+              deliveryFee += 1 * appStore.kmDeliveryCharge;
+            } else {
+              deliveryFee += distance * appStore.kmDeliveryCharge;
+            }
+            print(distance);
           }
-        } else {
-          print("Restaurant name is empty");
         }
-      }
-
-      appStore.mCartList.forEach((element) {
-        if (element?.isSuggestedPrice == true || element?.itemPrice == null) {
-          print("Price is not available");
-          print(element?.itemPrice);
-          appStore.setContainNoPrice(true);
-        } else {
-          appStore.setContainNoPrice(false);
-        }
-      });
-
-      if (totalQty <= 4 && totalQty > 0) {
-        deliveryFee += 100;
-      } else if (totalQty > 4 && totalQty < 25) {
-        deliveryFee += totalQty * 25;
-      } else if (totalQty > 25) {
-        deliveryFee += 500;
-      }
-
-      if (totalAroundOrder > 0) {
-        deliveryFee += AROUND_UCAD_CHARGES;
       }
     }
 
-    appStore.setIsCalculating(false);
+    if (totalQty <= 4 && totalQty > 0) {
+      deliveryFee += 100;
+    } else if (totalQty > 4 && totalQty < 25) {
+      deliveryFee += totalQty * 25;
+    } else if (totalQty > 25) {
+      deliveryFee += 500;
+    }
+    if (totalAroundOrder > 0) {
+      deliveryFee += appStore.constantDeliveryCharge;
+    }
+
     appStore.setDeliveryCharge(deliveryFee);
+    appStore.setIsCalculating(false);
     setState(() {});
   }
 

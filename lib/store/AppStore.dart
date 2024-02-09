@@ -4,6 +4,7 @@ import 'package:fooddelivery/models/AddressModel.dart';
 import 'package:fooddelivery/models/MenuModel.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Constants.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -71,6 +72,15 @@ abstract class _AppStore with Store {
 
   @observable
   double deliveryCharge = 0.0;
+  @observable
+  double constantDeliveryCharge = 0.0;
+
+  @observable
+  double kmDeliveryCharge = 0.0;
+
+
+  @observable
+  bool deliveryFeeAvailable = true;
 
   @observable
   bool isCalculating = false;
@@ -96,9 +106,30 @@ abstract class _AppStore with Store {
   @observable
   String paymentMethod = '';
 
+  @observable
+  String city = '';
+
+  @observable
+  LatLng? location;
+
   @action
   void setDeliveryCharge(double value) {
     deliveryCharge = value;
+  }
+
+  @action
+  void setConstantDeliveryCharge(double value) {
+    constantDeliveryCharge = value;
+  }
+
+  @action
+  void setKmDeliveryCharge(double value) {
+    kmDeliveryCharge = value;
+  }
+
+  @action
+  void setDeliveryFeeAvailable(bool val) {
+    deliveryFeeAvailable = val;
   }
 
   @action
@@ -278,5 +309,15 @@ abstract class _AppStore with Store {
   @action
   setHomescrenLoaded(bool val) {
     homescreenLoaded = val;
+  }
+
+  @action
+  setCity(String val) {
+    city = val;
+  }
+
+  @action
+  setLocation(LatLng val) {
+    location = val;
   }
 }

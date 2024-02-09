@@ -54,9 +54,12 @@ class RestaurantMenuTabWidgetState extends State<RestaurantMenuTabWidget> {
             itemBuilder: (context, documentSnapshot, index) {
               var menuItem =
                   documentSnapshot[index].data() as Map<String, dynamic>;
-              menuItem['withinUcad'] = widget.restaurantData!.withinUcad;
+              menuItem['restaurantLocation'] =
+                  widget.restaurantData!.restaurantLocation;
               menuItem['restaurantName'] =
                   widget.restaurantData!.restaurantName;
+              menuItem[RestaurantKeys.restaurantAddress] =
+                  widget.restaurantData!.restaurantAddress;
               menuItem[RestaurantKeys.ownedByUs] =
                   widget.restaurantData!.ownedByUs;
 

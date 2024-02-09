@@ -103,7 +103,9 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
             itemPrice: element.itemPrice,
             isSuggestedPrice: element.isSuggestedPrice,
             // restaurantId: element.restaurantId,
-            // restaurantName: element.restaurantName,
+            restaurantName: element.restaurantName,
+            restaurantAddress: element.restaurantAddress,
+            restaurantLocation: element.restaurantLocation,
           ),
         );
       });
@@ -113,7 +115,8 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       OrderModel orderModel = OrderModel();
 
       orderModel.userId = appStore.userId;
-      orderModel.orderStatus = ORDER_RECEIVED;
+      orderModel.orderStatus =
+          appStore.deliveryFeeAvailable ? ORDER_RECEIVED : ORDER_PENDING;
       orderModel.createdAt = DateTime.now();
       orderModel.updatedAt = DateTime.now();
       orderModel.totalAmount = widget.totalAmount;
@@ -128,7 +131,6 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
       orderModel.userAddress = appStore.addressModel!.address;
       orderModel.paymentMethod = appStore.paymentMethod;
       orderModel.deliveryCharge = appStore.deliveryCharge.toInt();
-      orderModel.restaurantCity = getStringAsync(USER_CITY_NAME);
       orderModel.paymentStatus = PAYMENT_STATUS_PENDING;
       orderModel.orderType = "TextOrder";
       // orderModel.userLocation = GeoPoint(
@@ -240,9 +242,17 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
                               style: secondaryTextStyle(color: Colors.white)),
                           Observer(
                             builder: (_) => appStore.isCalculating == true
-                                ? Text("Loading")
+                                ? Text(
+                                    "Loading",
+                                    style: primaryTextStyle(
+                                      color: white,
+                                    ),
+                                  )
                                 : Text(
-                                    getAmount(appStore.deliveryCharge.toInt()),
+                                    appStore.deliveryFeeAvailable
+                                        ? getAmount(
+                                            appStore.deliveryCharge.toInt())
+                                        : "Not Available",
                                     style: boldTextStyle(color: Colors.white)),
                           ),
                         ],
@@ -255,23 +265,33 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
                             style: primaryTextStyle(color: Colors.white),
                           ),
                           Observer(
-                              builder: (_) => appStore.isCalculating == true
-                                  ? Text("Loading")
-                                  : Text(
-                                      widget.totalAmount != null &&
+                            builder: (_) => appStore.isCalculating == true
+                                ? Text(
+                                    "Loading",
+                                    style: primaryTextStyle(
+                                      color: white,
+                                    ),
+                                  )
+                                : Text(
+                                    widget.totalAmount != null &&
+                                            widget.totalAmount != 0 &&
+                                            appStore.deliveryFeeAvailable !=
+                                                false
+                                        ? getAmount(
+                                            widget.totalAmount!.toInt() +
+                                                appStore.deliveryCharge
+                                                    .toInt()
+                                                    .validate())
+                                        : 'Not Available',
+                                    style: boldTextStyle(
+                                      color: widget.totalAmount != null &&
                                               widget.totalAmount != 0
-                                          ? getAmount(
-                                              widget.totalAmount!.toInt() +
-                                                  appStore.deliveryCharge
-                                                      .toInt()
-                                                      .validate())
-                                          : 'Not Available',
-                                      style: boldTextStyle(
-                                          color: widget.totalAmount != null &&
-                                                  widget.totalAmount != 0
-                                              ? context.iconColor
-                                              : orangeRed,
-                                          size: 20))),
+                                          ? white
+                                          : orangeRed,
+                                      size: 20,
+                                    ),
+                                  ),
+                          ),
                         ],
                       ),
                       30.height,

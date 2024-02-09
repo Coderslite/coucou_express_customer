@@ -25,6 +25,7 @@ class AddressListComponentState extends State<AddressListComponent> {
   double deliveryFee = 0;
   int totalQty = 0;
   int totalAroundOrder = 0;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -118,7 +119,8 @@ class AddressListComponentState extends State<AddressListComponent> {
                     });
                   }),
                 ],
-              )
+              ),
+              Loader().visible(isClicked),
             ],
           ),
         ).onTap(() async {
@@ -158,24 +160,41 @@ class AddressListComponentState extends State<AddressListComponent> {
     appStore.setIsCalculating(true);
     deliveryFee = 0;
     appStore.setDeliveryCharge(deliveryFee);
-
     for (var element in appStore.mCartList) {
       if (element!.ownedByUs == true &&
           addressModel.addressLocation == 'Inside UCAD') {
         totalQty += 0;
+        appStore.setDeliveryFeeAvailable(true);
       } else {
-        if (addressModel.addressLocation == "Inside UCAD") {
+        if (appStore.addressModel!.addressLocation == "Inside UCAD" &&
+            (element.restaurantLocation == 'Inside UCAD' ||
+                element.restaurantLocation == '')) {
           totalQty += element.qty!;
+          appStore.setDeliveryFeeAvailable(true);
+        } else if ((appStore.addressModel!.addressLocation == "Inside UCAD" &&
+                element.restaurantLocation == 'Around UCAD') ||
+            (element.restaurantLocation == '' &&
+                appStore.addressModel!.addressLocation == 'Around UCAD')) {
+          totalAroundOrder += 1;
+          appStore.setDeliveryFeeAvailable(true);
         } else {
-          if (addressModel.address!.isNotEmpty) {
-            LatLng userLocation =
-                await getLatLngFromLocationName(addressModel.address!);
-            double distance = calculateDistance(UCAD_LOCATION, userLocation);
-            double charge = distance * AROUND_UCAD_CHARGES;
-            deliveryFee += charge;
-            print("Distance is $distance");
+          var resLatLng = await getLatLngFromLocationName(
+              element.restaurantAddress.toString());
+          print(resLatLng);
+          if (resLatLng == LatLng(0, 0)) {
+            print("error fetching latlng");
+            toast("error getting restaurant location on google map");
+            appStore.setDeliveryFeeAvailable(false);
           } else {
-            print("Restaurant name is empty");
+            appStore.setDeliveryFeeAvailable(true);
+            var distance = calculateDistance(resLatLng, UCAD_LOCATION);
+            appStore.setDistance(distance.toString());
+            if (distance < 1) {
+              deliveryFee += 1 * appStore.kmDeliveryCharge;
+            } else {
+              deliveryFee += distance * appStore.kmDeliveryCharge;
+            }
+            print(distance);
           }
         }
       }
@@ -187,6 +206,9 @@ class AddressListComponentState extends State<AddressListComponent> {
       deliveryFee += totalQty * 25;
     } else if (totalQty > 25) {
       deliveryFee += 500;
+    }
+    if (totalAroundOrder > 0) {
+      deliveryFee += appStore.constantDeliveryCharge;
     }
 
     appStore.setDeliveryCharge(deliveryFee);

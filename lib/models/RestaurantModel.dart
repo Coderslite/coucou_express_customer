@@ -24,7 +24,7 @@ class RestaurantModel {
   List<String>? catList;
   String? restaurantCity;
   bool? onGoogle;
-  String? withinUcad;
+  String? restaurantLocation;
   bool? ownedByUs;
 
   RestaurantModel({
@@ -49,7 +49,7 @@ class RestaurantModel {
     this.catList,
     this.restaurantCity,
     this.onGoogle,
-    this.withinUcad,
+    this.restaurantLocation,
     this.ownedByUs,
   });
 
@@ -84,7 +84,7 @@ class RestaurantModel {
             : [],
         restaurantCity: json[RestaurantKeys.restaurantCity],
         onGoogle: json[RestaurantKeys.onGoogle],
-        withinUcad: json[RestaurantKeys.withinUcad],
+        restaurantLocation: json[RestaurantKeys.restaurantLocation],
         ownedByUs: json[RestaurantKeys.ownedByUs]);
   }
 
@@ -109,7 +109,7 @@ class RestaurantModel {
     data[RestaurantKeys.catList] = this.catList;
     data[RestaurantKeys.restaurantCity] = this.restaurantCity;
     data[RestaurantKeys.onGoogle] = this.onGoogle;
-    data[RestaurantKeys.withinUcad] = this.withinUcad;
+    data[RestaurantKeys.restaurantLocation] = this.restaurantLocation;
     data[RestaurantKeys.ownedByUs] = this.ownedByUs;
     return data;
   }

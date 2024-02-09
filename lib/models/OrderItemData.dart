@@ -11,6 +11,8 @@ class OrderItemData {
   bool? isSuggestedPrice;
   String? restaurantId;
   String? restaurantName;
+  String? restaurantLocation;
+  String? restaurantAddress;
 
   OrderItemData({
     this.id,
@@ -23,6 +25,8 @@ class OrderItemData {
     this.isSuggestedPrice,
     this.restaurantId,
     this.restaurantName,
+    this.restaurantLocation,
+    this.restaurantAddress,
   });
 
   factory OrderItemData.fromJson(Map<String, dynamic> json) {
@@ -36,6 +40,8 @@ class OrderItemData {
       qty: json[CommonKeys.qty],
       isSuggestedPrice: json[CommonKeys.isSuggesttedPrice],
       restaurantId: json[CommonKeys.restaurantId],
+      restaurantLocation: json[RestaurantKeys.restaurantLocation],
+      restaurantAddress: json[RestaurantKeys.restaurantAddress],
     );
   }
 
@@ -50,6 +56,9 @@ class OrderItemData {
     data[CommonKeys.qty] = this.qty;
     data[CommonKeys.isSuggesttedPrice] = this.isSuggestedPrice;
     data[CommonKeys.restaurantId] = this.restaurantId;
+    data[RestaurantKeys.restaurantName] = this.restaurantName;
+    data[RestaurantKeys.restaurantLocation] = this.restaurantLocation;
+    data[RestaurantKeys.restaurantAddress] = this.restaurantAddress;
     return data;
   }
 }

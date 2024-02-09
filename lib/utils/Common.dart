@@ -155,13 +155,11 @@ Future<void> saveOneSignalPlayerId() async {
 String getOrderStatusText(String orderStatus) {
   if (orderStatus == ORDER_RECEIVED) {
     return appStore.translate('order_is_being_approved');
-  } else if (orderStatus == ORDER_COOKING || orderStatus == ORDER_ASSIGNED) {
-    return appStore.translate('order_is_cooking');
-  } else if (orderStatus == ORDER_READY) {
-    return appStore.translate('your_order_is_ready_to_picked_up');
-  } else if (orderStatus == ORDER_DELIVERING) {
+  } else if (orderStatus == ORDER_ACCEPTED) {
+    return "A delivery boy is assigned";
+  } else if (orderStatus == ORDER_PICKUP) {
     return appStore.translate('your_food_is_on_the_way');
-  } else if (orderStatus == ORDER_COMPLETE) {
+  } else if (orderStatus == ORDER_DELIVERED) {
     return appStore.translate('order_is_delivered');
   } else if (orderStatus == ORDER_CANCELLED) {
     return appStore.translate('cancelled');
@@ -174,11 +172,11 @@ Color getOrderStatusColor(String? orderStatus) {
     return Color(0xFF9A8500);
   } else if (orderStatus == ORDER_PENDING) {
     return Color(0xFF6A8500);
-  } else if (orderStatus == ORDER_PICKUP) {
+  } else if (orderStatus == ORDER_ACCEPTED) {
     return Colors.orangeAccent;
-  } else if (orderStatus == ORDER_DELIVERING) {
+  } else if (orderStatus == ORDER_PICKUP) {
     return Colors.greenAccent;
-  } else if (orderStatus == ORDER_COMPLETE) {
+  } else if (orderStatus == ORDER_DELIVERED) {
     return Colors.green;
   } else if (orderStatus == ORDER_CANCELLED) {
     return Colors.red;

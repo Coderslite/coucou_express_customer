@@ -327,6 +327,61 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  late final _$constantDeliveryChargeAtom =
+      Atom(name: '_AppStore.constantDeliveryCharge', context: context);
+
+  @override
+  double get constantDeliveryCharge {
+    _$constantDeliveryChargeAtom.reportRead();
+    return super.constantDeliveryCharge;
+  }
+
+  @override
+  set constantDeliveryCharge(double value) {
+    _$constantDeliveryChargeAtom
+        .reportWrite(value, super.constantDeliveryCharge, () {
+      super.constantDeliveryCharge = value;
+    });
+  }
+
+  late final _$kmDeliveryChargeAtom =
+      Atom(name: '_AppStore.kmDeliveryCharge', context: context);
+
+  @override
+  double get kmDeliveryCharge {
+    _$kmDeliveryChargeAtom.reportRead();
+    return super.kmDeliveryCharge;
+  }
+
+  @override
+  set kmDeliveryCharge(double value) {
+    _$kmDeliveryChargeAtom.reportWrite(value, super.kmDeliveryCharge, () {
+      super.kmDeliveryCharge = value;
+    });
+  }
+
+  late final _$fixedDeliveryFeeAtom =
+      Atom(name: '_AppStore.fixedDeliveryFee', context: context);
+
+
+
+  late final _$deliveryFeeAvailableAtom =
+      Atom(name: '_AppStore.deliveryFeeAvailable', context: context);
+
+  @override
+  bool get deliveryFeeAvailable {
+    _$deliveryFeeAvailableAtom.reportRead();
+    return super.deliveryFeeAvailable;
+  }
+
+  @override
+  set deliveryFeeAvailable(bool value) {
+    _$deliveryFeeAvailableAtom.reportWrite(value, super.deliveryFeeAvailable,
+        () {
+      super.deliveryFeeAvailable = value;
+    });
+  }
+
   late final _$isCalculatingAtom =
       Atom(name: '_AppStore.isCalculating', context: context);
 
@@ -454,6 +509,37 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  late final _$cityAtom = Atom(name: '_AppStore.city', context: context);
+
+  @override
+  String get city {
+    _$cityAtom.reportRead();
+    return super.city;
+  }
+
+  @override
+  set city(String value) {
+    _$cityAtom.reportWrite(value, super.city, () {
+      super.city = value;
+    });
+  }
+
+  late final _$locationAtom =
+      Atom(name: '_AppStore.location', context: context);
+
+  @override
+  LatLng? get location {
+    _$locationAtom.reportRead();
+    return super.location;
+  }
+
+  @override
+  set location(LatLng? value) {
+    _$locationAtom.reportWrite(value, super.location, () {
+      super.location = value;
+    });
+  }
+
   late final _$setLoggedInAsyncAction =
       AsyncAction('_AppStore.setLoggedIn', context: context);
 
@@ -519,6 +605,39 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.setDeliveryCharge');
     try {
       return super.setDeliveryCharge(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setConstantDeliveryCharge(double value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setConstantDeliveryCharge');
+    try {
+      return super.setConstantDeliveryCharge(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setKmDeliveryCharge(double value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setKmDeliveryCharge');
+    try {
+      return super.setKmDeliveryCharge(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setDeliveryFeeAvailable(bool val) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setDeliveryFeeAvailable');
+    try {
+      return super.setDeliveryFeeAvailable(val);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -745,6 +864,28 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  dynamic setCity(String val) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setCity');
+    try {
+      return super.setCity(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setLocation(LatLng val) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setLocation');
+    try {
+      return super.setLocation(val);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoggedIn: ${isLoggedIn},
@@ -767,6 +908,9 @@ mCartList: ${mCartList},
 selectedLanguage: ${selectedLanguage},
 appLocale: ${appLocale},
 deliveryCharge: ${deliveryCharge},
+constantDeliveryCharge: ${constantDeliveryCharge},
+kmDeliveryCharge: ${kmDeliveryCharge},
+deliveryFeeAvailable: ${deliveryFeeAvailable},
 isCalculating: ${isCalculating},
 searchType: ${searchType},
 searchQuery: ${searchQuery},
@@ -774,7 +918,9 @@ distance: ${distance},
 time: ${time},
 containNoPrice: ${containNoPrice},
 isUploading: ${isUploading},
-paymentMethod: ${paymentMethod}
+paymentMethod: ${paymentMethod},
+city: ${city},
+location: ${location}
     ''';
   }
 }

@@ -30,11 +30,11 @@ class _TrackOrderState extends State<TrackOrder> {
       currentStep = 0;
     } else if (status == ORDER_RECEIVED) {
       currentStep = 1;
-    } else if (status == ORDER_PICKUP) {
+    } else if (status == ORDER_ACCEPTED) {
       currentStep = 2;
-    } else if (status == ORDER_DELIVERING) {
+    } else if (status == ORDER_PICKUP) {
       currentStep = 3;
-    } else if (status == ORDER_COMPLETE) {
+    } else if (status == ORDER_DELIVERED) {
       currentStep = 4;
     }
   }
@@ -94,10 +94,22 @@ class _TrackOrderState extends State<TrackOrder> {
                               : currentStep < 0
                                   ? StepState.disabled
                                   : StepState.editing,
-                          content: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Image.asset("assets/pending_order.png"),
+                          content: Column(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                child: Text(
+                                  "Your order is been reviewed, we will update you shortly",
+                                  style: primaryTextStyle(),
+                                ),
+                              ),
+                              30.height,
+                              SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Image.asset("assets/pending_order.png"),
+                              ),
+                            ],
                           ),
                         ),
                         Step(
@@ -127,7 +139,7 @@ class _TrackOrderState extends State<TrackOrder> {
                         ),
                         Step(
                           title: Text(
-                            ORDER_PICKUP,
+                            ORDER_ACCEPTED,
                             style: primaryTextStyle(),
                           ),
                           subtitle: Text(
@@ -147,12 +159,12 @@ class _TrackOrderState extends State<TrackOrder> {
                           content: SizedBox(
                             height: 100,
                             width: 100,
-                            child: Image.asset("assets/pickup.jpg"),
+                            child: Image.asset("assets/delivery_boy.png"),
                           ),
                         ),
                         Step(
                           title: Text(
-                            ORDER_DELIVERING,
+                            ORDER_PICKUP,
                             style: primaryTextStyle(),
                           ),
                           subtitle: Text(
@@ -172,12 +184,12 @@ class _TrackOrderState extends State<TrackOrder> {
                           content: SizedBox(
                             height: 100,
                             width: 100,
-                            child: Image.asset("assets/delivery_boy.png"),
+                            child: Image.asset("assets/pickup.jpg"),
                           ),
                         ),
                         Step(
                           title: Text(
-                            ORDER_COMPLETE,
+                            ORDER_DELIVERED,
                             style: primaryTextStyle(),
                           ),
                           subtitle: Text(

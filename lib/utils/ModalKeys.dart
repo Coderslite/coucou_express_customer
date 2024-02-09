@@ -47,6 +47,7 @@ class FoodKey {
 class RestaurantKeys {
   static String restaurantName = 'restaurantName';
   static String restaurantLatitude = 'restaurantLatitude';
+  static String restaurantLocation = 'restaurantLocation';
   static String restaurantLongitude = 'restaurantLongitude';
   static String photoUrl = 'photoUrl';
   static String openTime = 'openTime';
@@ -67,7 +68,6 @@ class RestaurantKeys {
   static String ingredientsTags = 'ingredientsTags';
   static String deliveryCharge = 'deliveryCharge';
   static String onGoogle = 'onGoogle';
-  static String withinUcad = 'withinUcad';
   static String ownedByUs = 'ownedByUs';
 }
 

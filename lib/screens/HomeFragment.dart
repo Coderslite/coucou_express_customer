@@ -290,52 +290,53 @@ class HomeFragmentState extends State<HomeFragment>
                 ],
               ).paddingAll(10).visible(appStore.isLoggedIn),
               5.height,
-              Row(
-                children: <Widget>[
-                  Container(
-                    decoration: boxDecorationWithRoundedCorners(
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: viewLineColor),
-                      backgroundColor: appStore.isDarkMode
-                          ? scaffoldSecondaryDark
-                          : Colors.white,
-                    ),
-                    child: TextFormField(
-                      style: primaryTextStyle(),
-                      controller: searchCont,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search,
-                            color: appStore.isDarkMode
-                                ? Colors.white
-                                : scaffoldSecondaryDark),
-                        hintText: appStore.translate('search_restaurant'),
-                        hintStyle: primaryTextStyle(),
-                        suffixIcon: CloseButton(
-                          onPressed: () {
-                            appStore.searchQuery = '';
-                            searchCont.text = '';
-                            _pagingController.itemList!.clear();
-                            _fetchPage(0, '');
+              Observer(builder: (context) {
+                searchCont.text = appStore.searchQuery;
+                return Row(
+                  children: <Widget>[
+                    Container(
+                        decoration: boxDecorationWithRoundedCorners(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: viewLineColor),
+                          backgroundColor: appStore.isDarkMode
+                              ? scaffoldSecondaryDark
+                              : Colors.white,
+                        ),
+                        child: TextFormField(
+                          style: primaryTextStyle(),
+                          controller: searchCont,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon:
+                                Icon(Icons.search, color: context.iconColor),
+                            hintText: appStore.translate('search_restaurant'),
+                            hintStyle: primaryTextStyle(),
+                            suffixIcon: CloseButton(
+                              color: context.iconColor,
+                              onPressed: () {
+                                appStore.searchQuery = '';
+                                searchCont.text = '';
+                                _pagingController.itemList!.clear();
+                                _fetchPage(0, '');
 
+                                setState(() {});
+                                1.seconds.delay.then((value) {
+                                  hideKeyboard(context);
+                                });
+                              },
+                            ).visible(appStore.searchQuery.isNotEmpty),
+                          ),
+                          onFieldSubmitted: (s) {
+                            appStore.searchQuery = s;
+                            hideKeyboard(context);
+                            _pagingController.itemList!.clear();
+                            _fetchPage(0, 'restaurant');
                             setState(() {});
-                            1.seconds.delay.then((value) {
-                              hideKeyboard(context);
-                            });
                           },
-                        ).visible(appStore.searchQuery.isNotEmpty),
-                      ),
-                      onFieldSubmitted: (s) {
-                        appStore.searchQuery = s;
-                        hideKeyboard(context);
-                        _pagingController.itemList!.clear();
-                        _fetchPage(0, 'restaurant');
-                        setState(() {});
-                      },
-                    ),
-                  ).expand(),
-                ],
-              ).paddingOnly(left: 16, right: 16, bottom: 8),
+                        )).expand(),
+                  ],
+                ).paddingOnly(left: 16, right: 16, bottom: 8);
+              }),
               Observer(builder: (context) {
                 return appStore.isLoading
                     ? Loader()

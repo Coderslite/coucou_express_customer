@@ -17,8 +17,15 @@ class MapAddressScreen extends StatefulWidget {
   double? userLongitude;
   String? address;
   bool? isUpdate;
+  bool? isChooseRestuarantLocation;
 
-  MapAddressScreen({this.userLatitude, this.userLongitude, this.address, this.isUpdate});
+  MapAddressScreen({
+    this.userLatitude,
+    this.userLongitude,
+    this.address,
+    this.isUpdate,
+    this.isChooseRestuarantLocation,
+  });
 
   @override
   _LocationChooserState createState() => _LocationChooserState();
@@ -53,12 +60,14 @@ class _LocationChooserState extends State<MapAddressScreen> {
     init();
     setStatusBarColor(
       appStore.isDarkMode ? scaffoldColorDark : Colors.white,
-      statusBarIconBrightness: appStore.isDarkMode ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness:
+          appStore.isDarkMode ? Brightness.light : Brightness.dark,
     );
   }
 
   init() async {
-    userLatLong = LatLng(widget.userLatitude.validate(), widget.userLongitude.validate());
+    userLatLong =
+        LatLng(widget.userLatitude.validate(), widget.userLongitude.validate());
 
     lastMapPosition = userLatLong;
 
@@ -95,13 +104,15 @@ class _LocationChooserState extends State<MapAddressScreen> {
   }
 
   getLocation(LatLng point) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(point.latitude, point.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(point.latitude, point.longitude);
     Placemark place = placemarks[0];
 
     if (place.locality != null) {
       userCityNameGlobal = place.locality;
     }
-    String address = "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea} ${place.postalCode}, ${place.country}";
+    String address =
+        "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea} ${place.postalCode}, ${place.country}";
     setState(() {
       title = place.name;
       detail = address;
@@ -112,19 +123,23 @@ class _LocationChooserState extends State<MapAddressScreen> {
   }
 
   getUserLocation() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
     if (place.locality != null) {
       userCityNameGlobal = place.locality;
     }
-    String address = "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea} ${place.postalCode}, ${place.country}";
+    String address =
+        "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea} ${place.postalCode}, ${place.country}";
 
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 16),
+        CameraPosition(
+            target: LatLng(position.latitude, position.longitude), zoom: 16),
       ),
     );
 
@@ -147,7 +162,8 @@ class _LocationChooserState extends State<MapAddressScreen> {
   void dispose() {
     setStatusBarColor(
       appStore.isDarkMode ? scaffoldColorDark : Colors.white,
-      statusBarIconBrightness: appStore.isDarkMode ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness:
+          appStore.isDarkMode ? Brightness.light : Brightness.dark,
     );
     super.dispose();
   }
@@ -164,7 +180,8 @@ class _LocationChooserState extends State<MapAddressScreen> {
                   mapToolbarEnabled: false,
                   zoomControlsEnabled: false,
                   onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(target: userLatLong!, zoom: 11.0),
+                  initialCameraPosition:
+                      CameraPosition(target: userLatLong!, zoom: 11.0),
                   markers: markers,
                   mapType: currentMapType,
                   onCameraMove: _onCameraMove,
@@ -179,6 +196,7 @@ class _LocationChooserState extends State<MapAddressScreen> {
               addressController: addressController,
               deliveryUserLat: deliveryUserLat,
               deliveryUserLong: deliveryUserLong,
+              isChooseRestaurantLocation: widget.isChooseRestuarantLocation,
             ),
           ],
         ),

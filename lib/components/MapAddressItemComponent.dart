@@ -16,12 +16,15 @@ class MapAddressItemComponent extends StatefulWidget {
   double? deliveryUserLat;
   double? deliveryUserLong;
   bool? isUpdate;
+  bool? isChooseRestaurantLocation;
 
-  MapAddressItemComponent(
-      {this.addressController,
-      this.deliveryUserLong,
-      this.deliveryUserLat,
-      this.isUpdate});
+  MapAddressItemComponent({
+    this.addressController,
+    this.deliveryUserLong,
+    this.deliveryUserLat,
+    this.isUpdate,
+    this.isChooseRestaurantLocation,
+  });
 
   @override
   MapAddressItemComponentState createState() => MapAddressItemComponentState();
@@ -63,6 +66,10 @@ class MapAddressItemComponentState extends State<MapAddressItemComponent> {
 
   Future<void> init() async {
     //
+  }
+
+  handleFinish() {
+    finish(context, widget.addressController!.text);
   }
 
   void validate() async {
@@ -149,7 +156,7 @@ class MapAddressItemComponentState extends State<MapAddressItemComponent> {
                               'additional information about the address'),
                       cursorColor: colorPrimary,
                       focus: otherDetailsFocus,
-                    ),
+                    ).visible(widget.isChooseRestaurantLocation != true),
                   ],
                 ),
               ),
@@ -157,10 +164,15 @@ class MapAddressItemComponentState extends State<MapAddressItemComponent> {
               AppButton(
                 width: context.width(),
                 color: colorPrimary,
-                child: Text(appStore.translate('save'),
+                child: Text(
+                    widget.isChooseRestaurantLocation == true
+                        ? "Continue"
+                        : appStore.translate('save'),
                     style: boldTextStyle(size: 14, color: Colors.white)),
                 onTap: () {
-                  validate();
+                  widget.isChooseRestaurantLocation == true
+                      ? handleFinish()
+                      : validate();
                 },
               )
             ],

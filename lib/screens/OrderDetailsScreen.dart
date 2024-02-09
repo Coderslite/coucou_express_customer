@@ -145,6 +145,26 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
     });
   }
 
+  void acceptOrder() async {
+    Map<String, dynamic> data = {
+      OrderKeys.orderStatus: ORDER_RECEIVED,
+      CommonKeys.updatedAt: DateTime.now(),
+    };
+
+    myOrderDBService
+        .updateDocument(data, widget.orderData!.id)
+        .then((res) async {
+      toast("Order Accepted");
+
+      widget.orderData!.orderStatus = ORDER_RECEIVED;
+
+      setState(() {});
+    }).catchError((error) {
+      toast(error.toString());
+      setState(() {});
+    });
+  }
+
   @override
   void dispose() {
     setStatusBarColor(appStore.isDarkMode ? scaffoldColorDark : Colors.white);
@@ -187,19 +207,17 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   decoration: boxDecorationWithRoundedCorners(
                       borderRadius: radius(8),
                       backgroundColor: getOrderStatusColor(
-                              widget.orderData!.orderStatus ==
-                                      NO_DRIVER_AVAILABLE
+                              widget.orderData!.orderStatus == ORDER_UPDATED
                                   ? ORDER_PENDING
                                   : widget.orderData!.orderStatus)
                           .withOpacity(0.05)),
                   child: Text(
-                      widget.orderData!.orderStatus == NO_DRIVER_AVAILABLE
+                      widget.orderData!.orderStatus == ORDER_UPDATED
                           ? ORDER_PENDING
                           : widget.orderData!.orderStatus.validate(),
                       style: boldTextStyle(
                           color: getOrderStatusColor(
-                              widget.orderData!.orderStatus ==
-                                      NO_DRIVER_AVAILABLE
+                              widget.orderData!.orderStatus == ORDER_UPDATED
                                   ? ORDER_PENDING
                                   : widget.orderData!.orderStatus),
                           size: 12)),
@@ -238,30 +256,28 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                widget.orderData!.orderStatus != ORDER_CANCELLED
-                    ? Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 8, right: 8, top: 4, bottom: 4),
-                            decoration: boxDecorationWithRoundedCorners(
-                                borderRadius: radius(8),
-                                backgroundColor: getOrderStatusColor(
-                                        widget.orderData!.orderStatus)
-                                    .withOpacity(0.05)),
-                            child: Text("Track Order",
-                                style: boldTextStyle(
-                                    color: mediumSeaGreen, size: 12)),
-                          ).paddingOnly(left: 16, top: 16).onTap(() {
-                            TrackOrder(
-                              isNew: false,
-                              orderId: widget.orderData!.id!,
-                            ).launch(context);
-                          }),
-                          16.height,
-                        ],
-                      )
-                    : Container(),
+                Column(
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                      decoration: boxDecorationWithRoundedCorners(
+                          borderRadius: radius(8),
+                          backgroundColor:
+                              getOrderStatusColor(widget.orderData!.orderStatus)
+                                  .withOpacity(0.05)),
+                      child: Text("Track Order",
+                          style:
+                              boldTextStyle(color: mediumSeaGreen, size: 12)),
+                    ).paddingOnly(left: 16, top: 16).onTap(() {
+                      TrackOrder(
+                        isNew: false,
+                        orderId: widget.orderData!.id!,
+                      ).launch(context);
+                    }),
+                    16.height,
+                  ],
+                ).visible(widget.orderData!.orderStatus != ORDER_CANCELLED),
                 Column(
                   children: [
                     Container(
@@ -286,6 +302,53 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 ).visible((widget.orderData!.orderStatus == ORDER_PENDING)),
               ],
             ),
+            10.height,
+            Text(
+              "Your Order price has been updated, kindly confirm if its affordable by you and either proceed with the order or cancel it",
+              style: boldTextStyle(color: peru),
+            )
+                .paddingAll(16)
+                .visible(widget.orderData!.orderStatus == ORDER_UPDATED),
+            Row(
+              children: [
+                TextButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: redColor),
+                  onPressed: () async {
+                    bool? res = await showConfirmDialog(context,
+                        appStore.translate('cancel_order_confirmation'),
+                        negativeText: appStore.translate('no'),
+                        positiveText: appStore.translate('yes'));
+                    if (res ?? false) {
+                      cancelOrder();
+                    }
+                  },
+                  child: Text(
+                    "Cancel Order",
+                    style: primaryTextStyle(color: white),
+                  ),
+                ),
+                20.width,
+                TextButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: mediumSeaGreen),
+                  onPressed: () async {
+                    bool? res = await showConfirmDialog(context,
+                        appStore.translate('cancel_order_confirmation'),
+                        negativeText: appStore.translate('no'),
+                        positiveText: appStore.translate('yes'));
+                    if (res ?? false) {
+                      acceptOrder();
+                    }
+                  },
+                  child: Text(
+                    "Accept Price",
+                    style: primaryTextStyle(color: white),
+                  ),
+                ),
+              ],
+            )
+                .paddingAll(16)
+                .visible(widget.orderData!.orderStatus == ORDER_UPDATED),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -312,7 +375,7 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 16.height,
               ],
             ).visible(
-                !isReview && widget.orderData!.orderStatus == ORDER_COMPLETE),
+                !isReview && widget.orderData!.orderStatus == ORDER_DELIVERED),
             8.height,
             TextButton(
                     onPressed: () {

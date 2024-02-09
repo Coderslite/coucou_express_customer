@@ -146,11 +146,6 @@ class RestaurantItemComponentState extends State<RestaurantItemComponent> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "${appStore.distance} km",
-                      style: secondaryTextStyle(),
-                    ),
-                    10.width,
-                    Text(
                       "${appStore.time} mins",
                       style: secondaryTextStyle(),
                     ),

@@ -89,7 +89,12 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                                 ),
                                 address == ''
                                     ? DropdownButtonFormField(
+                                        dropdownColor:
+                                            context.scaffoldBackgroundColor,
+                                        style: primaryTextStyle(),
                                         decoration: InputDecoration(
+                                          fillColor:
+                                              context.scaffoldBackgroundColor,
                                           prefixIcon: IconButton(
                                             onPressed: () {
                                               setState(() {
@@ -118,8 +123,14 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                                           address = val.toString();
                                         })
                                     : DropdownButtonFormField(
+                                        style: primaryTextStyle(),
+                                        dropdownColor:
+                                            context.scaffoldBackgroundColor,
                                         value: address,
                                         decoration: InputDecoration(
+                                          hintStyle: primaryTextStyle(),
+                                          fillColor:
+                                              context.scaffoldBackgroundColor,
                                           prefixIcon: IconButton(
                                             onPressed: () {
                                               setState(() {
@@ -158,7 +169,10 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                                               context: context,
                                               builder: (_) {
                                                 return AlertDialog(
-                                                  title: Text("Add Address"),
+                                                  title: Text(
+                                                    "Add Address",
+                                                    style: primaryTextStyle(),
+                                                  ),
                                                   content: Form(
                                                     key: addressFormKey,
                                                     child: Column(
@@ -166,25 +180,37 @@ class MyAddressScreenState extends State<MyAddressScreen> {
                                                           MainAxisSize.min,
                                                       children: [
                                                         TextFormField(
+                                                          style:
+                                                              primaryTextStyle(),
                                                           onChanged: (value) {
                                                             pavilionNo = value
                                                                 .toString();
                                                           },
                                                           decoration:
                                                               InputDecoration(
-                                                                  hintText:
-                                                                      "Enter pavilion/Room Number "),
+                                                                  hintStyle:
+                                                                      primaryTextStyle(),
+                                                                  label: Text(
+                                                                    "Enter pavilion/Room Number ",
+                                                                    style:
+                                                                        primaryTextStyle(),
+                                                                  )),
                                                         ),
                                                         8.height,
                                                         TextFormField(
+                                                          style:
+                                                              primaryTextStyle(),
                                                           onChanged: (value) {
                                                             otherDetails = value
                                                                 .toString();
                                                           },
                                                           decoration:
                                                               InputDecoration(
-                                                                  hintText:
-                                                                      "Add additional information about the address"),
+                                                                  label: Text(
+                                                            "Add additional information about the address",
+                                                            style:
+                                                                primaryTextStyle(),
+                                                          )),
                                                         ),
                                                         ElevatedButton(
                                                             style: ElevatedButton

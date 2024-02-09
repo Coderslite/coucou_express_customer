@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
 import 'package:fooddelivery/models/CategoryModel.dart';
-import 'package:fooddelivery/screens/RequestListOrder.dart';
+import 'package:fooddelivery/screens/Yonnima.dart';
 import 'package:fooddelivery/screens/RestaurantByCategoryScreen.dart';
 import 'package:fooddelivery/screens/VoiceOrder.dart';
 import 'package:fooddelivery/utils/Colors.dart';
@@ -64,7 +64,7 @@ class _CategoryItemComponentState extends State<CategoryItemComponent> {
     ).onTap(() {
       hideKeyboard(context);
       widget.category!.categoryName!.toString().toLowerCase() == 'yonnima'
-          ? RequestOrder(
+          ? YonnimaOrder(
               isGrocery: true,
             ).launch(context)
           : widget.category!.categoryName!.toLowerCase() == 'voice order'

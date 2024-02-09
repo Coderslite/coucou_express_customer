@@ -10,8 +10,8 @@ class MenuModel {
   String? categoryId;
   String? restaurantId;
   String? restaurantName;
-  String? restaurantLatitude;
-  String? restaurantLongitude;
+  String? restaurantLocation;
+  String? restaurantAddress;
   String? categoryName;
   bool? isSuggestedPrice;
   String? image;
@@ -45,8 +45,8 @@ class MenuModel {
     // this.updatedAt,
     this.restaurantId,
     this.restaurantName,
-    this.restaurantLatitude,
-    this.restaurantLongitude,
+    this.restaurantLocation,
+    this.restaurantAddress,
     this.qty = 1,
     this.isDeleted,
     this.ownedByUs,
@@ -72,8 +72,8 @@ class MenuModel {
       restaurantId: json[MenuKeys.restaurantId],
       qty: json['qty'] != null ? json['qty'] : 1,
       restaurantName: json[RestaurantKeys.restaurantName],
-      restaurantLatitude: json[RestaurantKeys.restaurantLatitude],
-      restaurantLongitude: json[RestaurantKeys.restaurantLongitude],
+      restaurantLocation: json[RestaurantKeys.restaurantLocation],
+      restaurantAddress: json[RestaurantKeys.restaurantAddress],
       ingredientsTags: json[MenuKeys.ingredientsTags] != null
           ? List<String>.from(json[MenuKeys.ingredientsTags])
           : [],
@@ -109,8 +109,8 @@ class MenuModel {
     data[MenuKeys.description] = this.description;
     data[MenuKeys.restaurantId] = this.restaurantId;
     data[RestaurantKeys.restaurantName] = this.restaurantName;
-    data[RestaurantKeys.restaurantLatitude] = this.restaurantLatitude;
-    data[RestaurantKeys.restaurantLongitude] = this.restaurantLongitude;
+    data[RestaurantKeys.restaurantLocation] = this.restaurantLocation;
+    data[RestaurantKeys.restaurantAddress] = this.restaurantAddress;
     data[CommonKeys.isDeleted] = this.isDeleted;
     data[MenuKeys.onGoogle] = this.onGoogle;
     data[MenuKeys.deliveryLocation] = this.deliveryLocation;

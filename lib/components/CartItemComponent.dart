@@ -51,45 +51,60 @@ class CartItemComponentState extends State<CartItemComponent> {
   }
 
   Future removeToCart(String id, int qty) async {
-    widget.cartData!.qty = widget.cartData!.qty! - 1;
+    if (widget.cartData!.qty! > 1) {
+      widget.cartData!.qty = widget.cartData!.qty! - 1;
+      appStore.updateCartData(id, widget.cartData);
 
-    appStore.updateCartData(id, widget.cartData);
+      Map<String, dynamic> req = {
+        CommonKeys.qty: FieldValue.increment(-1),
+        CommonKeys.updatedAt: DateTime.now(),
+      };
 
-    Map<String, dynamic> req = {
-      CommonKeys.qty: qty - 1,
-      CommonKeys.updatedAt: DateTime.now(),
-    };
-    if (qty == 0) {
-      removeToCartItem(widget.cartData!.id);
-    } else {
       await myCartDBService.updateDocument(req, id).then((value) {
-        if (widget.cartData!.qty == 0) {
-          removeToCartItem(id);
-        } else {
-          qty--;
-        }
+        setState(() {});
       }).catchError((e) {
         log(e);
       });
+    } else {
+      // If the quantity is 1 or less, remove the item from the cart
+      removeToCartItem(widget.cartData!.id);
     }
   }
 
   Future<void> removeToCartItem(String? id) async {
-    appStore.updateCartData(id!, widget.cartData);
-    await myCartDBService.removeDocument(id).then((value) {
-      appStore.mCartList.forEach((element) {
-        if (element!.id == widget.cartData!.id) {
-          widget.onUpdate.call();
+    if (widget.cartData!.qty! > 1) {
+      // If the quantity is greater than 1, decrement the quantity and update the cart
+      widget.cartData!.qty = widget.cartData!.qty! - 1;
+      appStore.updateCartData(id!, widget.cartData);
 
-          appStore.removeFromCart(element);
-          appStore.setQtyExist(false);
-        }
+      Map<String, dynamic> req = {
+        CommonKeys.qty: FieldValue.increment(-1),
+        CommonKeys.updatedAt: DateTime.now(),
+      };
+
+      await myCartDBService.updateDocument(req, id).then((value) {
+        setState(() {});
+      }).catchError((e) {
+        log(e);
       });
+    } else {
+      // If the quantity is 1 or less, remove the item from the cart
+      appStore.mCartList.removeWhere((element) => element!.id == id);
+      appStore.updateCartData(id!, widget.cartData);
+      widget.onUpdate.call();
       setState(() {});
       toast('Removed');
-    }).catchError((e) {
-      log(e.toString());
-    });
+      await myCartDBService.removeDocument(id).then((value) {
+        if (appStore.mCartList.isEmpty) {
+          appStore.setQtyExist(false);
+        }
+        widget.onUpdate.call();
+        setState(() {});
+        toast('Removed');
+      }).catchError((e) {
+        log(e.toString());
+      });
+    }
   }
 
   @override
