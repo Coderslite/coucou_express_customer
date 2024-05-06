@@ -6,7 +6,7 @@ import 'package:fooddelivery/utils/Constants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'DashboardScreen.dart';
-import 'LoginScreen.dart';
+import 'EmailScreen.dart';
 import 'WalkThroughScreen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class SplashScreenState extends State<SplashScreen> {
 
         DashboardScreen().launch(context, isNewTask: true);
       } else {
-        LoginScreen().launch(context, isNewTask: true);
+        EmailScreen().launch(context, isNewTask: true);
       }
     }
   }

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:fooddelivery/main.dart';
 import 'package:fooddelivery/models/RestaurantModel.dart';
 import 'package:fooddelivery/utils/Common.dart';

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fooddelivery/services/AuthService.dart';
 import 'package:fooddelivery/utils/Colors.dart';
-import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:fooddelivery/utils/Widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,7 +12,12 @@ import '../models/UserModel.dart';
 import 'DashboardScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
+  final String email;
   static String tag = '/RegisterScreen';
+
+  const RegisterScreen({
+    required this.email,
+  });
 
   @override
   RegisterScreenState createState() => RegisterScreenState();
@@ -23,7 +27,6 @@ class RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -44,68 +47,64 @@ class RegisterScreenState extends State<RegisterScreen> {
   Future<void> init() async {
     setStatusBarColor(appStore.isDarkMode ? scaffoldColorDark : Colors.white);
 
-    saveOneSignalPlayerId();
+    // saveOneSignalPlayerId();
   }
 
   Future<void> signUp() async {
     hideKeyboard(context);
     if (getStringAsync(PLAYER_ID).isEmpty) {
-      await saveOneSignalPlayerId();
+      // await saveOneSignalPlayerId();
       //if (getStringAsync(PLAYER_ID).isEmpty) return toast(errorMessage);
     }
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       appStore.setLoading(true);
 
-      await signUpWithEmail(
-              nameController.text.trim(),
-              emailController.text.trim(),
-              passwordController.text.trim(),
-              phoneController.text)
+      await signUpWithEmail(nameController.text.trim(), widget.email,
+              passwordController.text.trim(), phoneController.text)
           .then((value) {
         appStore.setLoading(false);
 
         DashboardScreen().launch(context, isNewTask: true);
       }).catchError((e) async {
-        if (e.toString() ==
-            '[firebase_auth/email-already-in-use] The email address is already in use by another account.') {
-          var user = await FirebaseAuth.instance.signInWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text);
-          var currentUser = user.user;
-          UserModel userModel = UserModel();
+        // if (e.toString() ==
+        //     '[firebase_auth/email-already-in-use] The email address is already in use by another account.') {
+        //   var user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        //       email: emailController.text, password: passwordController.text);
+        //   var currentUser = user.user;
+        //   UserModel userModel = UserModel();
 
-          /// Create user
-          userModel.uid = currentUser!.email.validate();
-          userModel.email = currentUser.email.validate();
-          userModel.password = passwordController.text.validate();
-          userModel.name = nameController.text.validate();
-          userModel.number = phoneController.text.validate();
-          userModel.photoUrl = currentUser.photoURL.validate();
-          userModel.loginType = LoginTypeApp;
-          userModel.updatedAt = DateTime.now();
-          userModel.createdAt = DateTime.now();
-          userModel.listOfAddress = [];
-          userModel.isAdmin = false;
-          userModel.isTester = false;
-          userModel.role = USER_ROLE;
-          userModel.favRestaurant = [];
+        //   /// Create user
+        //   userModel.uid = currentUser!.email.validate();
+        //   userModel.email = currentUser.email.validate();
+        //   userModel.password = passwordController.text.validate();
+        //   userModel.name = nameController.text.validate();
+        //   userModel.number = phoneController.text.validate();
+        //   userModel.photoUrl = currentUser.photoURL.validate();
+        //   userModel.loginType = LoginTypeApp;
+        //   userModel.updatedAt = DateTime.now();
+        //   userModel.createdAt = DateTime.now();
+        //   userModel.listOfAddress = [];
+        //   userModel.isAdmin = false;
+        //   userModel.isTester = false;
+        //   userModel.role = USER_ROLE;
+        //   userModel.favRestaurant = [];
 
-          userModel.city = '';
-          userModel.isDeleted = false;
+        //   userModel.city = '';
+        //   userModel.isDeleted = false;
 
-          userModel.oneSignalPlayerId = getStringAsync(PLAYER_ID);
+        //   userModel.oneSignalPlayerId = getStringAsync(PLAYER_ID);
 
-          await userDBService
-              .addDocumentWithCustomId(currentUser.email, userModel.toJson())
-              .then((value) async {
-            appStore.setLoading(false);
-            saveUserDetails(userModel, 'app');
-            DashboardScreen().launch(context, isNewTask: true);
-          });
-        } else {
-          toast(e.toString());
-          appStore.setLoading(false);
-        }
+        //   await userDBService
+        //       .addDocumentWithCustomId(currentUser.email, userModel.toJson())
+        //       .then((value) async {
+        //     appStore.setLoading(false);
+        //     saveUserDetails(userModel, 'app');
+        //     DashboardScreen().launch(context, isNewTask: true);
+        //   });
+        // } else {
+        toast(e.toString());
+        appStore.setLoading(false);
       });
     }
   }
@@ -152,19 +151,19 @@ class RegisterScreenState extends State<RegisterScreen> {
                           textStyle: primaryTextStyle(),
                         ),
                         16.height,
-                        AppTextField(
-                          controller: emailController,
-                          textFieldType: TextFieldType.EMAIL,
-                          focus: emailFocus,
-                          errorThisFieldRequired:
-                              appStore.translate('this_field_is_required'),
-                          decoration: inputDecoration(
-                              labelText: appStore.translate('email')),
-                          nextFocus: phoneFocus,
-                          textStyle: primaryTextStyle(),
-                          suffixIconColor: colorPrimary,
-                        ),
-                        16.height,
+                        // AppTextField(
+                        //   controller: emailController,
+                        //   textFieldType: TextFieldType.EMAIL,
+                        //   focus: emailFocus,
+                        //   errorThisFieldRequired:
+                        //       appStore.translate('this_field_is_required'),
+                        //   decoration: inputDecoration(
+                        //       labelText: appStore.translate('email')),
+                        //   nextFocus: phoneFocus,
+                        //   textStyle: primaryTextStyle(),
+                        //   suffixIconColor: colorPrimary,
+                        // ),
+                        // 16.height,
                         AppTextField(
                           controller: phoneController,
                           textFieldType: TextFieldType.PHONE,

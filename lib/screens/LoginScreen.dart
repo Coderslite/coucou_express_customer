@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:fooddelivery/screens/HomeFragment.dart';
+import 'package:fooddelivery/screens/EmailScreen.dart';
 import 'package:fooddelivery/screens/OTPScreen.dart';
 import 'package:fooddelivery/services/AuthService.dart';
 import 'package:fooddelivery/utils/Colors.dart';
-import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:fooddelivery/utils/Images.dart';
 import 'package:fooddelivery/utils/Widgets.dart';
@@ -15,7 +13,6 @@ import '../main.dart';
 import 'AddPhoneNumberScreen.dart';
 import 'DashboardScreen.dart';
 import 'ForgotPasswordScreen.dart';
-import 'RegisterScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   static String tag = '/LoginScreen';
@@ -44,12 +41,12 @@ class LoginScreenState extends State<LoginScreen> {
         statusBarIconBrightness:
             appStore.isDarkMode ? Brightness.light : Brightness.dark);
 
-    if (getStringAsync(PLAYER_ID).isEmpty) saveOneSignalPlayerId();
+    // if (getStringAsync(PLAYER_ID).isEmpty) saveOneSignalPlayerId();
   }
 
   Future<void> loginWithGoogle() async {
     if (getStringAsync(PLAYER_ID).isEmpty) {
-      await saveOneSignalPlayerId();
+      // await saveOneSignalPlayerId();
     }
 
     appStore.setLoading(true);
@@ -69,7 +66,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   Future<void> loginWithEmail() async {
     if (isMobile && getStringAsync(PLAYER_ID).isEmpty) {
-      await saveOneSignalPlayerId();
+      // await saveOneSignalPlayerId();
       //if (getStringAsync(PLAYER_ID).isEmpty) return toast(errorMessage);
     }
     hideKeyboard(context);
@@ -197,7 +194,7 @@ class LoginScreenState extends State<LoginScreen> {
                       style: primaryTextStyle(color: colorPrimary)),
                 ],
               ).onTap(() {
-                RegisterScreen().launch(context);
+                EmailScreen().launch(context);
               }),
             ),
             30.height,

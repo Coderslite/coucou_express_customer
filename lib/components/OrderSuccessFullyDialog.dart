@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
-import 'package:fooddelivery/models/OrderModel.dart';
-import 'package:fooddelivery/screens/DashboardScreen.dart';
+import 'package:fooddelivery/screens/track_order/OrderTracker.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../screens/TrackOrder.dart';
 
 class OrderSuccessFullyDialog extends StatefulWidget {
   static String tag = '/OrderSuccessFullyDialog';
@@ -64,9 +62,8 @@ class OrderSuccessFullyDialogState extends State<OrderSuccessFullyDialog> {
           child: Text(appStore.translate('continue'),
               style: boldTextStyle(color: Colors.white)),
           onTap: () {
-            TrackOrder(
+            OrderTracker(
               orderId: widget.orderId,
-              isNew: true,
             ).launch(context);
           },
         ).paddingOnly(left: 8, right: 8, bottom: 30)

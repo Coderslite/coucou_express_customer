@@ -54,6 +54,19 @@ class UserDBService extends BaseService {
     }
   }
 
+    Future<bool> isEmailExist(String? email) async {
+    Query query = ref
+        .where(UserKeys.email, isEqualTo: email);
+
+    var res = await query.limit(1).get();
+
+    if (res.docs.isNotEmpty) {
+      return res.docs.length == 1;
+    } else {
+      return false;
+    }
+  }
+
   Future<UserModel> loginWithEmail({String? email, String? password}) async {
     return await ref
         .where(UserKeys.email, isEqualTo: email)

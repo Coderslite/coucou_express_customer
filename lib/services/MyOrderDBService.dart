@@ -14,7 +14,8 @@ class MyOrderDBService extends BaseService {
   Future<OrderModel> getOrderById(String? id) async {
     return await ref.where('id', isEqualTo: id).limit(1).get().then((value) {
       if (value.docs.isNotEmpty) {
-        return OrderModel.fromJson(value.docs.first.data() as Map<String, dynamic>);
+        return OrderModel.fromJson(
+            value.docs.first.data() as Map<String, dynamic>);
       } else {
         throw appStore.translate('order_not_found');
       }
@@ -24,7 +25,8 @@ class MyOrderDBService extends BaseService {
   Stream<OrderModel> orderById({String? id}) {
     return ref.where('id', isEqualTo: id).limit(1).snapshots().map((value) {
       if (value.docs.isNotEmpty) {
-        return OrderModel.fromJson(value.docs.first.data() as Map<String, dynamic>);
+        return OrderModel.fromJson(
+            value.docs.first.data() as Map<String, dynamic>);
       } else {
         throw appStore.translate('order_not_found');
       }
@@ -32,7 +34,12 @@ class MyOrderDBService extends BaseService {
   }
 
   Stream<List<OrderModel>> orders({String orderId = ''}) {
-    return orderQuery(orderId: orderId).orderBy(CommonKeys.createdAt, descending: false).snapshots().map((x) => x.docs.map((y) => OrderModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+    return orderQuery(orderId: orderId)
+        .orderBy(CommonKeys.createdAt, descending: false)
+        .snapshots()
+        .map((x) => x.docs
+            .map((y) => OrderModel.fromJson(y.data() as Map<String, dynamic>))
+            .toList());
   }
 
   Query orderQuery({String orderId = ''}) {

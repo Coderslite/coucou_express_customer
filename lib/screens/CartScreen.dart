@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fooddelivery/components/CartItemComponent.dart';
 import 'package:fooddelivery/models/MenuModel.dart';
 import 'package:fooddelivery/utils/Colors.dart';
-import 'package:fooddelivery/utils/Constants.dart';
 import 'package:fooddelivery/utils/Widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 

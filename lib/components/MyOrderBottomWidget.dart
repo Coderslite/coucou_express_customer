@@ -11,7 +11,6 @@ import 'package:fooddelivery/utils/Constants.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../function/available_drivers.dart';
-import '../function/send_notification.dart';
 import '../main.dart';
 import 'OrderSuccessFullyDialog.dart';
 
@@ -73,7 +72,7 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
 
       AddressModel? data =
           await MyAddressScreen(isOrder: widget.isOrder).launch(context);
-      if (data!.addressLocation != null && data is AddressModel) {
+      if (data!.addressLocation != null) {
         appStore.setAddressModel(data);
         setState(() {});
       }
@@ -116,7 +115,7 @@ class MyOrderBottomWidgetState extends State<MyOrderBottomWidget> {
 
       orderModel.userId = appStore.userId;
       orderModel.orderStatus =
-          appStore.deliveryFeeAvailable ? ORDER_RECEIVED : ORDER_PENDING;
+          appStore.deliveryFeeAvailable ? ORDER_ACCEPTED : ORDER_PENDING;
       orderModel.createdAt = DateTime.now();
       orderModel.updatedAt = DateTime.now();
       orderModel.totalAmount = widget.totalAmount;

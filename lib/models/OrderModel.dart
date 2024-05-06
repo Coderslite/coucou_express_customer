@@ -5,6 +5,7 @@ import 'OrderItemData.dart';
 
 class OrderModel {
   List<OrderItemData>? listOfOrder;
+  List? buyFromPlaces;
   int? totalAmount;
   int? totalItem;
   String? userId;
@@ -29,12 +30,14 @@ class OrderModel {
   int? deliveryCharge;
   bool? taken;
   String? orderType;
+  String? updatedOrderType;
   String? orderUrl;
   List? receiptUrl;
   String? otherInformation;
 
   OrderModel({
     this.listOfOrder,
+    this.buyFromPlaces,
     this.totalAmount,
     this.totalItem,
     this.userId,
@@ -59,6 +62,7 @@ class OrderModel {
     this.deliveryCharge,
     this.taken = false,
     this.orderType,
+    this.updatedOrderType,
     this.orderUrl,
     this.receiptUrl,
     this.otherInformation,
@@ -71,6 +75,7 @@ class OrderModel {
               .map<OrderItemData>((e) => OrderItemData.fromJson(e))
               .toList()
           : null,
+      buyFromPlaces: json['buyFromPlaces'],
       totalAmount: json[OrderKeys.totalAmount],
       totalItem: json[OrderKeys.totalItem],
       userId: json[OrderKeys.userId],
@@ -99,6 +104,7 @@ class OrderModel {
       id: json[CommonKeys.id],
       taken: json[OrderKeys.taken],
       orderType: json[OrderKeys.orderType],
+      updatedOrderType: json[OrderKeys.updatedOrderType],
       orderUrl: json[OrderKeys.orderUrl],
       receiptUrl: json[OrderKeys.receiptUrl],
       otherInformation: json[MenuKeys.otherInformation],

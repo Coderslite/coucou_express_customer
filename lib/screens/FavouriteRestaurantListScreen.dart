@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/components/RestaurantItemComponent.dart';
 import 'package:fooddelivery/models/RestaurantModel.dart';
-import 'package:fooddelivery/utils/Constants.dart';
-import 'package:fooddelivery/utils/Widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';

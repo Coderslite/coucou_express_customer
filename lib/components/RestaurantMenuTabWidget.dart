@@ -1,3 +1,4 @@
+import 'package:firebase_pagination/firebase_pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fooddelivery/models/MenuModel.dart';
@@ -7,7 +8,6 @@ import 'package:fooddelivery/utils/Constants.dart';
 import 'package:fooddelivery/utils/ModalKeys.dart';
 import 'package:fooddelivery/utils/Widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:paginate_firestore/paginate_firestore.dart';
 
 import '../main.dart';
 import 'FoodMenuItemWidget.dart';
@@ -47,8 +47,7 @@ class RestaurantMenuTabWidgetState extends State<RestaurantMenuTabWidget> {
       return Stack(
         key: uniqueKey,
         children: [
-          PaginateFirestore(
-            itemBuilderType: PaginateBuilderType.listView,
+         FirestorePagination(
             query: foodItemDBService
                 .restaurantsFoodMenuQuery(widget.restaurantData!.id.validate()),
             itemBuilder: (context, documentSnapshot, index) {
@@ -85,14 +84,10 @@ class RestaurantMenuTabWidgetState extends State<RestaurantMenuTabWidget> {
             isLive: true,
             physics: ClampingScrollPhysics(),
             shrinkWrap: true,
-            itemsPerPage: DocLimit,
             bottomLoader: Loader(),
             initialLoader: Loader(),
             onEmpty:
                 noDataWidget(errorMessage: appStore.translate('noDataFound')),
-            onError: (e) =>
-                Text(e.toString(), style: primaryTextStyle()).center(),
-            separator: Divider(),
           ),
           Observer(
             builder: (_) => viewCartWidget(
@@ -100,7 +95,7 @@ class RestaurantMenuTabWidgetState extends State<RestaurantMenuTabWidget> {
                 totalItemLength: '${appStore.mCartList.length}',
                 onTap: () async {
                   CartScreen(
-                    isRemove: true,
+                    isRemove: true, 
                     handleUpdate: handleUpdate,
                   ).launch(context);
                 }).visible(appStore.mCartList.isNotEmpty),

@@ -88,6 +88,7 @@ class OrderKeys {
   static String deliveryCharge = 'deliveryCharge';
   static String taken = 'taken';
   static String orderType = 'orderType';
+  static String updatedOrderType = 'updatedOrderType';
   static String orderUrl = 'orderUrl';
   static String receiptUrl = 'receiptUrl';
 }

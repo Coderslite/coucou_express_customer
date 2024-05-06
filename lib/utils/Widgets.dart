@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -20,19 +19,19 @@ InputDecoration inputDecoration({String? labelText}) {
   return InputDecoration(
     border: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.grey),
-        borderRadius: radius() as BorderRadius),
+        borderRadius: radius()),
     enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.grey),
-        borderRadius: radius() as BorderRadius),
+        borderRadius: radius()),
     focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: colorPrimary),
-        borderRadius: radius() as BorderRadius),
+        borderRadius: radius()),
     errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
-        borderRadius: radius() as BorderRadius),
+        borderRadius: radius()),
     focusedErrorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
-        borderRadius: radius() as BorderRadius),
+        borderRadius: radius()),
     labelText: labelText,
     labelStyle: primaryTextStyle(),
     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),

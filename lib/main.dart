@@ -16,14 +16,12 @@ import 'package:fooddelivery/services/RestaurantDBService.dart';
 import 'package:fooddelivery/services/UserDBService.dart';
 import 'package:fooddelivery/store/AppStore.dart';
 import 'package:fooddelivery/utils/Colors.dart';
-import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'AppTheme.dart';
-import 'firebase_options.dart';
 import 'screens/SplashScreen.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;

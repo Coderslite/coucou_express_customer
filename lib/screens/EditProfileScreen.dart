@@ -26,7 +26,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
   FocusNode emailFocus = FocusNode();
 
-  PickedFile? image;
+XFile? image;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
 
   Future getImage() async {
     if (!isLoggedInWithGoogle()) {
-      image = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 100);
+      image = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 100);
 
       setState(() {});
     }

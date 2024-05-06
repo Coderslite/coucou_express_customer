@@ -7,6 +7,7 @@ import 'package:fooddelivery/components/OrderDetailsComponent.dart';
 import 'package:fooddelivery/main.dart';
 import 'package:fooddelivery/models/OrderItemData.dart';
 import 'package:fooddelivery/models/OrderModel.dart';
+import 'package:fooddelivery/screens/track_order/OrderTracker.dart';
 import 'package:fooddelivery/services/DeliveryBoyReviewDBService.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
@@ -147,7 +148,7 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   void acceptOrder() async {
     Map<String, dynamic> data = {
-      OrderKeys.orderStatus: ORDER_RECEIVED,
+      OrderKeys.orderStatus: ORDER_ACCEPTED,
       CommonKeys.updatedAt: DateTime.now(),
     };
 
@@ -156,7 +157,7 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
         .then((res) async {
       toast("Order Accepted");
 
-      widget.orderData!.orderStatus = ORDER_RECEIVED;
+      widget.orderData!.orderStatus = ORDER_ACCEPTED;
 
       setState(() {});
     }).catchError((error) {
@@ -207,17 +208,17 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   decoration: boxDecorationWithRoundedCorners(
                       borderRadius: radius(8),
                       backgroundColor: getOrderStatusColor(
-                              widget.orderData!.orderStatus == ORDER_UPDATED
+                              widget.orderData!.orderStatus == ORDER_PENDING
                                   ? ORDER_PENDING
                                   : widget.orderData!.orderStatus)
                           .withOpacity(0.05)),
                   child: Text(
-                      widget.orderData!.orderStatus == ORDER_UPDATED
+                      widget.orderData!.orderStatus == ORDER_PENDING
                           ? ORDER_PENDING
                           : widget.orderData!.orderStatus.validate(),
                       style: boldTextStyle(
                           color: getOrderStatusColor(
-                              widget.orderData!.orderStatus == ORDER_UPDATED
+                              widget.orderData!.orderStatus == ORDER_PENDING
                                   ? ORDER_PENDING
                                   : widget.orderData!.orderStatus),
                           size: 12)),
@@ -270,8 +271,7 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           style:
                               boldTextStyle(color: mediumSeaGreen, size: 12)),
                     ).paddingOnly(left: 16, top: 16).onTap(() {
-                      TrackOrder(
-                        isNew: false,
+                      OrderTracker(
                         orderId: widget.orderData!.id!,
                       ).launch(context);
                     }),
@@ -304,11 +304,11 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             10.height,
             Text(
-              "Your Order price has been updated, kindly confirm if its affordable by you and either proceed with the order or cancel it",
+              "Your Order price has been PORDER_PENDING, kindly confirm if its affordable by you and either proceed with the order or cancel it",
               style: boldTextStyle(color: peru),
             )
                 .paddingAll(16)
-                .visible(widget.orderData!.orderStatus == ORDER_UPDATED),
+                .visible(widget.orderData!.orderStatus == ORDER_PENDING),
             Row(
               children: [
                 TextButton(
@@ -348,7 +348,7 @@ class OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ],
             )
                 .paddingAll(16)
-                .visible(widget.orderData!.orderStatus == ORDER_UPDATED),
+                .visible(widget.orderData!.orderStatus == ORDER_PENDING),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

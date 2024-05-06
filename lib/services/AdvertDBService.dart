@@ -4,7 +4,6 @@ import 'package:fooddelivery/services/BaseService.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 
 import '../main.dart';
-import '../models/FoodModel.dart';
 
 class AdvertDBService extends BaseService {
   AdvertDBService() {

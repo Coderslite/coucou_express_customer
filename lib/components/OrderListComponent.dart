@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
 import 'package:fooddelivery/models/OrderModel.dart';
-import 'package:fooddelivery/screens/OrderDetailsScreen.dart';
+import 'package:fooddelivery/screens/track_order/OrderTracker.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:intl/intl.dart';
@@ -100,17 +99,17 @@ class OrderListComponentState extends State<OrderListComponent> {
                 decoration: boxDecorationWithRoundedCorners(
                     borderRadius: radius(8),
                     backgroundColor: getOrderStatusColor(
-                            widget.orderData!.orderStatus == ORDER_UPDATED
+                            widget.orderData!.orderStatus == ORDER_PENDING
                                 ? ORDER_PENDING
                                 : widget.orderData!.orderStatus)
                         .withOpacity(0.05)),
                 child: Text(
-                    widget.orderData!.orderStatus == ORDER_UPDATED
+                    widget.orderData!.orderStatus == ORDER_PENDING
                         ? ORDER_PENDING
                         : widget.orderData!.orderStatus.validate(),
                     style: boldTextStyle(
                         color: getOrderStatusColor(
-                            widget.orderData!.orderStatus == ORDER_UPDATED
+                            widget.orderData!.orderStatus == ORDER_PENDING
                                 ? ORDER_PENDING
                                 : widget.orderData!.orderStatus),
                         size: 12)),
@@ -139,10 +138,7 @@ class OrderListComponentState extends State<OrderListComponent> {
           ),
         ],
       ).onTap(() {
-        OrderDetailsScreen(
-                listOfOrder: widget.orderData!.listOfOrder,
-                orderData: widget.orderData)
-            .launch(context);
+        OrderTracker(orderId: widget.orderData!.id.validate()).launch(context);
       }, borderRadius: radius()),
     );
   }

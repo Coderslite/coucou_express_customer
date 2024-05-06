@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fooddelivery/models/CategoryModel.dart';
 import 'package:fooddelivery/screens/Yonnima.dart';
 import 'package:fooddelivery/screens/VoiceOrder.dart';
+import 'package:fooddelivery/screens/voice_order/VoiceOrderOnboarding.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -50,8 +51,9 @@ class ServiceCategory extends StatelessWidget {
     ).onTap(() {
       if (appStore.isLoggedIn) {
         if (data.categoryName!.toLowerCase() == 'voice order') {
-          showModalBottomSheet(
-              context: context, builder: ((context) => VoiceOrder()));
+          VoiceOrderOnboarding().launch(context);
+          // showModalBottomSheet(
+          //     context: context, builder: ((context) => VoiceOrder()));
         } else if (data.categoryName!.toLowerCase() == 'yonnima') {
           YonnimaOrder(isGrocery: true).launch(context);
         } else {

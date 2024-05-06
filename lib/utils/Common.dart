@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
@@ -145,17 +145,15 @@ List<String> highDeliveryTags() {
   return list;
 }
 
-Future<void> saveOneSignalPlayerId() async {
-  await OneSignal.shared.getDeviceState().then((value) async {
-    if (value!.userId.validate().isNotEmpty)
-      await setValue(PLAYER_ID, value.userId.validate());
-  });
-}
+// Future<void> saveOneSignalPlayerId() async {
+//   await OneSignal.shared.getDeviceState().then((value) async {
+//     if (value!.userId.validate().isNotEmpty)
+//       await setValue(PLAYER_ID, value.userId.validate());
+//   });
+// }
 
 String getOrderStatusText(String orderStatus) {
-  if (orderStatus == ORDER_RECEIVED) {
-    return appStore.translate('order_is_being_approved');
-  } else if (orderStatus == ORDER_ACCEPTED) {
+  if (orderStatus == ORDER_ACCEPTED) {
     return "A delivery boy is assigned";
   } else if (orderStatus == ORDER_PICKUP) {
     return appStore.translate('your_food_is_on_the_way');
@@ -168,9 +166,7 @@ String getOrderStatusText(String orderStatus) {
 }
 
 Color getOrderStatusColor(String? orderStatus) {
-  if (orderStatus == ORDER_RECEIVED) {
-    return Color(0xFF9A8500);
-  } else if (orderStatus == ORDER_PENDING) {
+  if (orderStatus == ORDER_PENDING) {
     return Color(0xFF6A8500);
   } else if (orderStatus == ORDER_ACCEPTED) {
     return Colors.orangeAccent;

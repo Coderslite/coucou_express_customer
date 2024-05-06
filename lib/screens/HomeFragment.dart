@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +10,6 @@ import 'package:fooddelivery/models/AddressModel.dart';
 import 'package:fooddelivery/models/CategoryModel.dart';
 import 'package:fooddelivery/models/FoodModel.dart';
 import 'package:fooddelivery/models/RestaurantModel.dart';
-import 'package:fooddelivery/screens/LoginScreen.dart';
-import 'package:fooddelivery/screens/OrderDetailsScreen.dart';
 import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Common.dart';
 import 'package:fooddelivery/utils/ModalKeys.dart';
@@ -21,8 +18,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:paginate_firestore/bloc/pagination_listeners.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:paginate_firestore/bloc/pagination_listeners.dart';
 import 'package:upgrader/upgrader.dart';
 
 import '../components/AdWidget.dart';
@@ -40,8 +37,8 @@ class HomeFragment extends StatefulWidget {
 
 class HomeFragmentState extends State<HomeFragment>
     with AfterLayoutMixin<HomeFragment> {
-  PaginateRefreshedChangeListener refreshChangeListener =
-      PaginateRefreshedChangeListener();
+  // PaginateRefreshedChangeListener refreshChangeListener =
+  //     PaginateRefreshedChangeListener();
 
   TextEditingController searchCont = TextEditingController();
 
@@ -122,23 +119,23 @@ class HomeFragmentState extends State<HomeFragment>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      if (!appStore.isLoggedIn) {
-        LoginScreen().launch(context, isNewTask: true);
-      } else {
-        if (result.notification.additionalData!.containsKey('orderId')) {
-          String? orderId = result.notification.additionalData!['orderId'];
+    // OneSignal.shared
+    //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+    //   if (!appStore.isLoggedIn) {
+    //     LoginScreen().launch(context, isNewTask: true);
+    //   } else {
+    //     if (result.notification.additionalData!.containsKey('orderId')) {
+    //       String? orderId = result.notification.additionalData!['orderId'];
 
-          myOrderDBService.getOrderById(orderId).then((value) {
-            OrderDetailsScreen(listOfOrder: value.listOfOrder, orderData: value)
-                .launch(context);
-          }).catchError((e) {
-            toast(e.toString());
-          });
-        }
-      }
-    });
+    //       myOrderDBService.getOrderById(orderId).then((value) {
+    //         OrderDetailsScreen(listOfOrder: value.listOfOrder, orderData: value)
+    //             .launch(context);
+    //       }).catchError((e) {
+    //         toast(e.toString());
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   Future<void> checkPermission() async {
@@ -246,12 +243,6 @@ class HomeFragmentState extends State<HomeFragment>
       child: Scaffold(
         body: UpgradeAlert(
           upgrader: Upgrader(
-            canDismissDialog: false,
-            showIgnore: false,
-            showLater: false,
-            dialogStyle: Platform.isIOS
-                ? UpgradeDialogStyle.cupertino
-                : UpgradeDialogStyle.material,
             durationUntilAlertAgain: const Duration(minutes: 1),
           ),
           child: Column(

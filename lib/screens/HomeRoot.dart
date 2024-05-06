@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/main.dart';
-import 'package:fooddelivery/utils/Colors.dart';
 import 'package:fooddelivery/utils/Constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,7 +9,6 @@ import 'package:nb_utils/nb_utils.dart';
 import '../utils/ModalKeys.dart';
 import 'CartFragment.dart';
 import 'HomeFragment.dart';
-import 'LoginScreen.dart';
 import 'OrderFragment.dart';
 import 'ProfileFragment.dart';
 

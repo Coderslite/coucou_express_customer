@@ -1,37 +1,26 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../components/OrderSuccessFullyDialog.dart';
 import '../components/pament_method.dart';
-import '../function/send_notification.dart';
 import '../main.dart';
 import '../models/AddressModel.dart';
-import '../models/OrderItemData.dart';
 import '../models/OrderModel.dart';
-import '../services/GetLocationLatLng.dart';
-import '../services/GetRestaurantLocation.dart';
-import '../utils/Common.dart';
 import '../utils/Constants.dart';
-import 'package:google_maps_webservice/src/places.dart';
-import 'package:http/http.dart' as http;
+// import 'package:google_maps_webservice/src/places.dart';
 
 import 'MyAddressScreen.dart';
 
@@ -137,7 +126,7 @@ class _VoiceOrderState extends State<VoiceOrder> {
 
         AddressModel? data =
             await MyAddressScreen(isOrder: true).launch(context);
-        if (data != null && data is AddressModel) {
+        if (data != null) {
           appStore.setAddressModel(data);
           setState(() {});
           makeRequest();
@@ -149,7 +138,7 @@ class _VoiceOrderState extends State<VoiceOrder> {
 
           AddressModel? data =
               await MyAddressScreen(isOrder: true).launch(context);
-          if (data != null && data is AddressModel) {
+          if (data != null) {
             appStore.setAddressModel(data);
 
             makeRequest();
@@ -173,7 +162,7 @@ class _VoiceOrderState extends State<VoiceOrder> {
       OrderModel orderModel = OrderModel();
 
       orderModel.userId = appStore.userId;
-      orderModel.orderStatus = ORDER_RECEIVED;
+      orderModel.orderStatus = ORDER_PENDING;
       orderModel.createdAt = DateTime.now();
       orderModel.updatedAt = DateTime.now();
       orderModel.totalAmount = null;
@@ -377,7 +366,6 @@ class _VoiceOrderState extends State<VoiceOrder> {
                                         height: 150,
                                         width: 150,
                                         child: AvatarGlow(
-                                          endRadius: 20,
                                           animate: _isRecording ? true : false,
                                           child: Icon(
                                             Icons.record_voice_over,
